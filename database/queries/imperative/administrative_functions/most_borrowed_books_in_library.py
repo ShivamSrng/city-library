@@ -14,26 +14,27 @@ class MostBorrowedBooksInLibrary:
   
   
   def execute(self,
-              library_name: str,
-              limit: int) -> dict:
+              limit: int,
+              library_name: str) -> dict:
     """
     Get number N as input and print the N most borrowed books in the library
     
     Args:
       limit (int): The limit to get the most borrowed books in the library
+      library_name (str): The name of the library to get the most borrowed books in
     
     Returns:
       dict: A dictionary containing the metadata of the most borrowed books in the library
     """
     
     query = f"""
-    SELECT BOR.DOCID, BO.ISBN
-    FROM BORROWS AS BOR, BOOK AS BO
+    SELECT BOR.DOCID, DOC.TITLE, BO.ISBN
+    FROM BORROWS AS BOR, BOOK AS BO, DOCUMENT AS DOC
     WHERE BOR.BID IN (
       SELECT BID
         FROM BRANCH
         WHERE BNAME='{library_name}'
-    ) AND BO.DOCID = BOR.DOCID
+    ) AND BO.DOCID = BOR.DOCID AND DOC.DOCID = BOR.DOCID
     GROUP BY BOR.DOCID
     ORDER BY COUNT(DISTINCT BOR.RID) DESC
     LIMIT {limit};

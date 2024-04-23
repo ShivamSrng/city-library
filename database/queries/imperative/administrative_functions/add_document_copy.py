@@ -57,6 +57,12 @@ class AddDocumentCopy:
           query=add_copy_query,
           description="Add a copy of the document to the branch by automatically generating the appropriate copy number and position"
         )
+        add_copy_result["new_copy_details"] = {
+          "DOCID": document_id,
+          "COPYNO": fake_copyno,
+          "BID": branch_id,
+          "POSITION": fake_position
+        }
         return add_copy_result
 
 

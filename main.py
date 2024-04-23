@@ -152,6 +152,58 @@ def getReservedDocument(
 
 
 @app.get(
+	path="/cityLibrary/reader/reserveDocument/{reader_id}/{document_id}/{copy_no}/{branch_id}",
+	tags=["imperative reader"],
+	description="Reserve a document using the given parameters"
+)
+def reserveDocument(
+	reader_id: str,
+	document_id: str,
+	copy_no: str,
+	branch_id: str,
+):
+	"""
+	Reserve a document using the given parameters
+	
+	Args:
+		reader_id (str): The reader_id to reserve the document for
+		document_id (str): The document_id to reserve
+		copy_no (str): The copy_no of the document
+		branch_id (str): The branch_id of the document
+	
+	Returns:
+		dict: A dictionary containing the reserve details
+	"""
+	return dbengine.reserveDocument(reader_id, document_id, copy_no, branch_id)
+
+
+@app.get(
+	path="/cityLibrary/reader/returnDocument/{bor_no}/{docid}/{copyno}/{bid}",
+	tags=["imperative reader"],
+	description="Return a document using the given parameters"
+)
+def returnDocument(
+	bor_no: str,
+	docid: str,
+	copyno: str,
+	bid: str,
+):
+	"""
+	Return a document using the given parameters
+	
+	Args:
+		bor_no (str): The bor_no to return the document for
+		docid (str): The docid to return
+		copyno (str): The copyno of the document
+		bid (str): The bid of the document
+	
+	Returns:
+		dict: A dictionary containing the return details
+	"""
+	return dbengine.returnDocument(bor_no, docid, copyno, bid)
+
+
+@app.get(
 	path="/cityLibrary/reader/getDocumentByPublisherNameConstrained/{publisher_name}",
 	tags=["imperative reader"],
 	description="Get all documents that matches the given publisher_name"

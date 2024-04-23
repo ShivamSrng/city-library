@@ -433,7 +433,7 @@ class InsertFakeData:
       dict: The status of the insertion of fake document data
     """
     
-    self.fake_record_insertion_limit *= 15
+    self.fake_record_insertion_limit *= 5
     for i in tqdm(range(self.fake_record_insertion_limit), total=self.fake_record_insertion_limit, desc="Inserting fake document data"):
       fake_docid = "DOC" + self.fake_profile.password(length=6, special_chars=False, digits=True, upper_case=True, lower_case=False)
       fake_title = self.fake_profile.document_title().title()
@@ -531,7 +531,7 @@ class InsertFakeData:
         self.readers_borrows[fake_reader_id] += 1
         while self.readers_borrows[fake_reader_id] > 10:
           fake_reader_id = self.reader_data.sample(n=1)["RID"].values[0]
-          if fake_reader_id not in self.readers_borrows:
+          if fake_reader_id not in self.readers_borrows or self.readers_borrows[fake_reader_id] <= 10:
             break
       else:
         self.readers_borrows[fake_reader_id] = 1
@@ -594,7 +594,8 @@ class InsertFakeData:
         self.readers_reserves[fake_reader_id] += 1
         while self.readers_reserves[fake_reader_id] > 10:
           fake_reader_id = self.reader_data.sample(n=1)["RID"].values[0]
-          if fake_reader_id not in self.readers_reserves:
+          if fake_reader_id not in self.readers_reserves or self.readers_reserves[fake_reader_id] <= 10:
+            self.readers_reserves[fake_reader_id] += 1
             break
       else:
         self.readers_reserves[fake_reader_id] = 1

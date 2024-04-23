@@ -5,6 +5,8 @@ from database.consts import MYSQLConstants, FakeDataConstants
 # imperative
 from database.queries.imperative.reader_functions.search_document import SearchDocument
 from database.queries.imperative.reader_functions.document_checkout import DocumentCheckout
+from database.queries.imperative.reader_functions.document_return import DocumentReturn
+from database.queries.imperative.reader_functions.document_reserve import DocumentReserve
 from database.queries.imperative.reader_functions.reserved_documents import ReservedDocument
 from database.queries.imperative.reader_functions.compute_fine import ComputeFine
 
@@ -203,6 +205,40 @@ class DatabaseEngine:
     """
     
     return ReservedDocument(self.connection).get_reserved_document(reader_id)
+
+
+  def reserveDocument(self, reader_id: str, document_id: str, copy_no: str, branch_id: str) -> dict:
+    """
+    Used to reserve a document for a reader
+    
+    Args:
+      reader_id (str): The reader_id to reserve the document for
+      document_id (str): The document_id to reserve
+      copy_no (str): The copy_no to reserve
+      branch_id (str): The branch_id to reserve
+    
+    Returns:
+      dict: A dictionary containing the reservation details
+    """
+
+    return DocumentReserve(self.connection).execute(reader_id, document_id, copy_no, branch_id)
+
+
+  def returnDocument(self, bor_no: str, docid: str, copyno: str, bid: str) -> dict:
+    """
+    Used to return a document to the library
+    
+    Args:
+      bor_no (str): The bor_no to return the document for
+      docid (str): The docid to return
+      copyno (str): The copyno to return
+      bid (str): The bid to return
+    
+    Returns:
+      dict: A dictionary containing the return details
+    """
+
+    return DocumentReturn(self.connection).execute(bor_no, docid, copyno, bid)
   
 
   def getDocumentByPublisherNameConstrained(self, publisher_name: str) -> dict:
@@ -323,18 +359,19 @@ class DatabaseEngine:
     return ComputeFineCollectedByBranch(self.connection).execute(startdatetime, enddatetime)
   
 
-  def mostBorrowedBooksInLibrary(self, limit: int) -> dict:
+  def mostBorrowedBooksInLibrary(self, limit: int, library_name: str) -> dict:
     """
     Used to get the most borrowed books in the library
 
     Args:
       limit (int): The limit to get the most borrowed books
+      library_name (str): The library name to get the most borrowed books
     
     Returns:
       dict: A dictionary containing the metadata of the most borrowed books
     """
 
-    return MostBorrowedBooksInLibrary(self.connection).execute(limit)
+    return MostBorrowedBooksInLibrary(self.connection).execute(limit, library_name)
   
 
   def mostFrequentBorrowers(self, limit: int, branch_no: str) -> dict:

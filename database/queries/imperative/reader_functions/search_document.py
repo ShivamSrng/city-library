@@ -74,7 +74,7 @@ class SearchDocument:
     """
 
     search_document_query = f"""
-    SELECT DOC.*
+    SELECT DOC.*, PUB.PUBNAME
     FROM DOCUMENT AS DOC, PUBLISHER AS PUB
     WHERE DOC.PUBLISHERID = PUB.PUBID AND PUB.PUBNAME = '{publisher_name}';
     """

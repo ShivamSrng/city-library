@@ -54,5 +54,12 @@ class AddReader:
         query=add_reader_query,
         description="Add a reader to the database"
       )
+      add_reader_result["new_reader_details"] = {
+        "RID": reader_id,
+        "RTYPE": reader_type,
+        "RNAME": reader_name,
+        "RADDRESS": reader_address,
+        "PHONE_NO": reader_phone
+      }
       return add_reader_result
 

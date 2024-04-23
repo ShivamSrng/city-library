@@ -80,3 +80,13 @@ class SearchDocumentCopy:
         query=search_query,
         description="Search for the document copy"
       )
+    else:
+      search_query = f"""
+      SELECT *
+      FROM COPY
+      WHERE DOCID = '{document_id}' AND COPYNO = '{copy_id}' AND BID = '{bid}';
+      """
+      return self.database_utilities.format_query_result(
+        query=search_query,
+        description="Search for the document copy, which is not borrowed or reserved"
+      )

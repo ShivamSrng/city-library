@@ -4,6 +4,10 @@ import styles from './page.module.css'
 import AddADocument from '../AdminFunctions/AddADocument/page'
 import SearchADocument from '../AdminFunctions/SearchADocument/page'
 import AddAReader from '../AdminFunctions/AddAReader/page'
+import RetrieveBranchInformation from '../AdminFunctions/RetrieveBranchInformation/page'
+import MostFrequentBorrowerOfBranch from '../AdminFunctions/MostFrequentBorrowersOfBranch/page'
+import MostFrequentBorrowerOfLibrary from '../AdminFunctions/MostFrequentBorrowerOfLibrary/page'
+
 
 const RenderFormTitle = ({index}) => {
   switch(index) {
@@ -38,6 +42,12 @@ const RenderFormComponent = ({index}) => {
       return <SearchADocument />
     case 2:
       return <AddAReader />
+    case 3:
+      return <RetrieveBranchInformation />
+    case 4:
+      return <MostFrequentBorrowerOfBranch />
+    case 5:
+      return <MostFrequentBorrowerOfLibrary />
   }
 }
 
@@ -73,9 +83,24 @@ const adminDashboard = () => {
                     setIsSelected(2)
                   }
                 }>Add new reader.</li>
-                <li>Print branch information (name and location).</li>
-                <li>Get number N and branch number I as input and print the top N most frequent borrowers (Rid and name) in branch I and the number of books each has borrowed.</li>
-                <li>Get number N as input and print the top N most frequent borrowers (Rid and name) in the library and the number of books each has borrowed.</li>
+                <li onClick={
+                  async () => {
+                    setFormTitle("Print Branch Information")
+                    setIsSelected(3)
+                  }
+                }>Print branch information (name and location).</li>
+                <li onClick={
+                  async () => {
+                    setFormTitle("Get top N most frequent borrowers in branch I")
+                    setIsSelected(4)
+                  }
+                }>Get number N and branch number I as input and print the top N most frequent borrowers (Rid and name) in branch I and the number of books each has borrowed.</li>
+                <li onClick={
+                  async () => {
+                    setFormTitle("Get top N most frequent borrowers in Library")
+                    setIsSelected(5)
+                  }
+                }>Get number N as input and print the top N most frequent borrowers (Rid and name) in the library and the number of books each has borrowed.</li>
                 <li>Get number N and branch number I as input and print the N most borrowed books in branch I.</li>
                 <li>Get number N as input and print the N most borrowed books in the library.</li>
                 <li>Get a year as input and print the 10 most popular books of that year in the library.</li>

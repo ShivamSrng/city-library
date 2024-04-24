@@ -27,6 +27,20 @@ class MostFrequentBorrowersOfLibrary:
       dict: A dictionary containing the metadata of the most frequent borrowers of the library
     """
     
+    query_to_check_if_library_exists = f"""
+    SELECT COUNT(*)
+    FROM BRANCH
+    WHERE BNAME='{library_name}';
+    """
+
+    result_of_library_check = self.database_utilities.format_query_result(
+      query=query_to_check_if_library_exists,
+      description="Check if the library exists"
+    )
+    if result_of_library_check["query_result"][0]["COUNT(*)"] == 0:
+      result_of_library_check["descriptive_error"] = "Library does not exist"
+      return result_of_library_check
+    
     query = f"""
     SELECT REA.RID, REA.RNAME, COUNT(DISTINCT BOR.DOCID) AS BOOKS_BORROWED
     FROM READER AS REA, BORROWS AS BOR

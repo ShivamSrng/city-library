@@ -27,6 +27,19 @@ class MostFrequentlyBorrowers:
       dict: A dictionary containing the metadata of the most frequently borrowing users
     """
     
+    query_to_check_if_branch_exists = f"""
+    SELECT COUNT(*)
+    FROM BRANCH
+    WHERE BID='{branch_no}';
+    """
+    result_of_branch_check = self.database_utilities.format_query_result(
+      query=query_to_check_if_branch_exists,
+      description="Check if the branch exists"
+    )
+    if result_of_branch_check["query_result"][0]["COUNT(*)"] == 0:
+      result_of_branch_check["descriptive_error"] = "Branch does not exist"
+      return result_of_branch_check
+    
     query = f"""
     SELECT REA.RID, REA.RNAME, COUNT(DISTINCT COP.COPYNO, COP.DOCID) AS NO_OF_BOOKS_BORROWED
     FROM COPY AS COP, BORROWS AS BOR, READER AS REA

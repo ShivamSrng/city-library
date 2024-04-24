@@ -30,6 +30,7 @@ class RetrieveBranchInformation:
       description="Check if the branch exists"
     )
     if branch_exists_result["query_result"][0]["COUNT(*)"] == 0:
+      branch_exists_result["descriptive_error"] = "The branch does not exist. Please enter a valid branch_id."
       return branch_exists_result
     else:
       retrieve_branch_information_query = f"""

@@ -34,6 +34,27 @@ def read_root() -> dict:
 
 # ---------------------------------------------------------------#
 # imperative
+
+@app.get(
+	path="/cityLibrary/reader/validation/{reader_id}",
+	tags=["imperative reader"],
+	description="Check if a reader exists in the database"
+)
+def checkReaderExists(
+	reader_id: str,
+):
+	"""
+	Check if a reader exists in the database
+	
+	Args:
+		reader_id (str): The reader_id to check if it exists
+	
+	Returns:
+		dict: A dictionary containing the metadata of the reader
+	"""
+	return dbengine.checkReaderExists(reader_id)
+
+
 @app.get(
   path="/cityLibrary/reader/searchDocumentByDocumentId/{document_id}",
   tags=["imperative reader"],
@@ -95,22 +116,21 @@ def searchDocumentByPublisherName(
 
 
 @app.get(
-	path="/cityLibrary/reader/checkoutDocument/{document_id}/{reader_id}",
+	path="/cityLibrary/reader/checkoutDocument/{reader_id}/{document_id}/{copy_no}/{branch_id}",
 	tags=["imperative reader"],
 	description="Checkout a document from the library using the given parameters"
 )
 def checkoutDocument(
+	reader_id: str,
 	document_id: str,
   copy_no: str,
   branch_id: str,
-	reader_id: str,
 ):
 	"""
 	Checkout a document from the library using the given parameters
 	
 	Args:
 		document_id (str): The document_id to checkout
-		reader_id (str): The reader_id to checkout the document to
 		copy_no (str): The copy_no of the document
 		branch_id (str): The branch_id of the document
 	
@@ -253,6 +273,7 @@ def validation(
 		dict: A dictionary containing the validation details
 	"""
 	return dbengine.validateAdminData(username, password)
+
 
 @app.get(
 	path="/cityLibrary/admin/addDocumentCopy/{document_id}/{branch_id}",

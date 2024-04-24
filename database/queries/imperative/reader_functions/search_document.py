@@ -25,6 +25,19 @@ class SearchDocument:
       dict: A dictionary containing the information of the document
     """
 
+    query_check_document_id = f"""
+    SELECT COUNT(*)
+    FROM DOCUMENT AS DOC
+    WHERE DOC.DOCID = '{document_id}';
+    """
+    result_document_id_exists = self.dbutilities.format_query_result(
+      query=query_check_document_id,
+      description="Check if the Document ID exists"
+    )
+    if result_document_id_exists["query_result"][0]["COUNT(*)"] == 0:
+      result_document_id_exists["descriptive_error"] = f"Document with ID as '{document_id}' does not exist"
+      return result_document_id_exists
+    
     search_document_query = f"""
     SELECT *
     FROM DOCUMENT AS DOC
@@ -49,6 +62,19 @@ class SearchDocument:
       dict: A dictionary containing the information of the document
     """
 
+    query_check_title = f"""
+    SELECT COUNT(*)
+    FROM DOCUMENT AS DOC
+    WHERE DOC.TITLE = '{title}';
+    """
+    result_title_exists = self.dbutilities.format_query_result(
+      query=query_check_title,
+      description="Check if the Title exists"
+    )
+    if result_title_exists["query_result"][0]["COUNT(*)"] == 0:
+      result_title_exists["descriptive_error"] = f"Document with Title as '{title}' does not exist"
+      return result_title_exists
+    
     search_document_query = f"""
     SELECT *
     FROM DOCUMENT AS DOC
@@ -72,7 +98,19 @@ class SearchDocument:
     Returns:
       dict: A dictionary containing the information of the document
     """
-
+    query_check_publisher_name = f"""
+    SELECT COUNT(*)
+    FROM PUBLISHER AS PUB
+    WHERE PUB.PUBNAME = '{publisher_name}';
+    """
+    result_publisher_name_exists = self.dbutilities.format_query_result(
+      query=query_check_publisher_name,
+      description="Check if the Publisher Name exists"
+    )
+    if result_publisher_name_exists["query_result"][0]["COUNT(*)"] == 0:
+      result_publisher_name_exists["descriptive_error"] = f"No document exists for the Publisher Name as '{publisher_name}'"
+      return result_publisher_name_exists
+    
     search_document_query = f"""
     SELECT DOC.*, PUB.PUBNAME
     FROM DOCUMENT AS DOC, PUBLISHER AS PUB
@@ -96,7 +134,19 @@ class SearchDocument:
     Returns:
       dict: A dictionary containing the information of the document
     """
-
+    query_check_publisher_name = f"""
+    SELECT COUNT(*)
+    FROM PUBLISHER AS PUB
+    WHERE PUB.PUBNAME = '{publisher_name}';
+    """
+    result_publisher_name_exists = self.dbutilities.format_query_result(
+      query=query_check_publisher_name,
+      description="Check if the Publisher Name exists"
+    )
+    if result_publisher_name_exists["query_result"][0]["COUNT(*)"] == 0:
+      result_publisher_name_exists["descriptive_error"] = f"No document exists for the Publisher Name as '{publisher_name}'"
+      return result_publisher_name_exists
+    
     search_document_query = f"""
     SELECT DOC.DOCID, DOC.TITLE
     FROM DOCUMENT AS DOC, PUBLISHER AS PUB

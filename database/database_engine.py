@@ -3,6 +3,7 @@ import MySQLdb
 from database.consts import MYSQLConstants, FakeDataConstants
 
 # imperative
+from database.queries.imperative.reader_functions.check_reader_exists import CheckReaderExists
 from database.queries.imperative.reader_functions.search_document import SearchDocument
 from database.queries.imperative.reader_functions.document_checkout import DocumentCheckout
 from database.queries.imperative.reader_functions.document_return import DocumentReturn
@@ -164,6 +165,20 @@ class DatabaseEngine:
     """
 
     return SearchDocument(self.connection).by_documentID(document_id)
+  
+
+  def checkReaderExists(self, reader_id: str) -> dict:
+    """
+    Used to check if a reader exists in the database
+    
+    Args:
+      reader_id (str): The reader_id to check for
+    
+    Returns:
+      dict: A dictionary containing the reader details
+    """
+
+    return CheckReaderExists(self.connection).execute(reader_id)
   
 
   def searchDocumentByTitle(self, title: str) -> dict:

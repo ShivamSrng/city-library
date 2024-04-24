@@ -35,6 +35,7 @@ class ReservedDocument:
     )
     
     if reader["query_result"] is None:
+      reader["descriptive_error"] = "The reader does not exist."
       return reader
     else:
       reserved_document_query = f"""
@@ -48,6 +49,7 @@ class ReservedDocument:
       )
       
       if reserved_document["query_result"] is None:
+        reserved_document["descriptive_error"] = "The reader has not reserved any document yet."
         return reserved_document
       else:
         reserved_document_info_retrieval_query = f"""
@@ -60,12 +62,4 @@ class ReservedDocument:
           query=reserved_document_info_retrieval_query,
           description="Get the information of the reserved document based on the reader_id"
         )
-        return {
-          "message": f"Reserved document information retrieved successfully for the reader with Reader ID: {reader_id}",
-          "query_result": reserved_document_info["query_result"],
-          "queries": {
-            "reader_exists_query": reader,
-            "reserved_document_query": reserved_document,
-            "reserved_document_info_retrieval_query": reserved_document_info,
-          }
-        }
+        return reserved_document_info

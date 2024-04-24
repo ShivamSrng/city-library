@@ -39,6 +39,7 @@ class SearchDocumentCopy:
       description="Check if the copy exists"
     )
     if copy_exists["query_result"][0]["COUNT(*)"] == 0:
+      copy_exists["descriptive_error"] = "The document copy does not exist, either the document ID, copy ID or branch ID is incorrect."
       return copy_exists
     
     search_copy_query_in_borrows = f"""

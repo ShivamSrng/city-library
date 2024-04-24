@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import styles from './page.module.css'
 import AddADocument from '../AdminFunctions/AddADocument/page'
 import SearchADocument from '../AdminFunctions/SearchADocument/page'
+import AddAReader from '../AdminFunctions/AddAReader/page'
 
 const RenderFormTitle = ({index}) => {
   switch(index) {
@@ -35,6 +36,8 @@ const RenderFormComponent = ({index}) => {
       return <AddADocument />
     case 1:
       return <SearchADocument />
+    case 2:
+      return <AddAReader />
   }
 }
 

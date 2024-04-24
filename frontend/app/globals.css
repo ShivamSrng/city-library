@@ -3,6 +3,8 @@
   src: url(./../public/fonts/NeueHaasDisplayMediu.ttf);
 }
 
+::-webkit-scrollbar {display:none;}
+
 body{
   margin: 0px 0px;
   padding: 0px 0px;

@@ -2,6 +2,27 @@ import React from 'react'
 import Image from 'next/image'
 import styles from './page.module.css'
 
+function jsonToTable(jsonData) {
+  let tableHtml = '<div style="padding: 1.5rem 0rem;"><table style="border-collapse: collapse; border: 1px solid #ddd;">';
+  tableHtml += '<tr>';
+  for (let key in jsonData) {
+    if (jsonData.hasOwnProperty(key)) {
+      tableHtml += `<th style="border: 1px solid black; padding: 1rem 1rem; text-align: left;">${key}</th>`;
+    }
+  }
+  tableHtml += '</tr>';
+  tableHtml += '<tr>';
+  for (let key in jsonData) {
+    if (jsonData.hasOwnProperty(key)) {
+      tableHtml += `<td style="border: 1px solid black; padding: 1rem 1rem; text-align: left;">${jsonData[key]}</td>`;
+    }
+  }
+  tableHtml += '</tr>';
+  tableHtml += '</table></div>';
+  return tableHtml;
+}
+
+
 const addADocument = () => {
   return (
     <>
@@ -19,12 +40,19 @@ const addADocument = () => {
                 const data = await response.json()
                 var resultOverlay = document.getElementById('overlayResult')
                 resultOverlay.style.display = 'flex'
-                if (data.result) {
-                  resultOverlay.innerHTML = "Copy Added Successfully, with details as: " + JSON.stringify(data.new_copy_details) + ".<br>"
-                  resultOverlay.innerHTML += "<button onClick={function f() {window.location.href='/AdminDashboard' resultOverlay.style.display = 'none'}}>Close</button>"
+                if (data.status == "success") {
+                  let content = "<div style='display: flex; flex-direction: column; margin-top: 10px;'>";
+                  content += "<p>Copy Added Successfully, with details as: </p>";
+                  content += jsonToTable(data.new_copy_details); // Assuming jsonToTable function returns a table HTML string
+                  content += "<button style='width: 20%; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/AdminDashboard'\">Close</button>";
+                  content += "</div>";
+                  resultOverlay.innerHTML = content;
                 } else {
-                  resultOverlay.innerHTML = "Failed to add copy. Please check the document ID and branch ID."
-                  resultOverlay.innerHTML += "<button onClick={function f() {window.location.href='/AdminDashboard' resultOverlay.style.display = 'none'}}>Close</button>"
+                  let content = "<div style='display: flex; flex-direction: column;'>";
+                  content += "<p>Copy failed to be added. Please check the data that you have entered.</p>";
+                  content += "<button style='width: 20%; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/AdminDashboard'\">Close</button>";
+                  content += "</div>";
+                  resultOverlay.innerHTML = content;
                 }
                 // window.location.href = '/AdminDashboard'
               }

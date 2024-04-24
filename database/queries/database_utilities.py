@@ -33,6 +33,7 @@ class DatabaseUtilities:
       self.connection.commit()
       if len(result) == 0 or result is None:
         return {
+          "status": "success",
           "query": re.sub(' +', ' ', query.replace("\n", "").replace("\t", "").strip()),
           "description": description,
           "query_result": None
@@ -43,12 +44,14 @@ class DatabaseUtilities:
         for row in result
       ]
       return {
+        "status": "success",
         "query": re.sub(' +', ' ', query.replace("\n", "").replace("\t", "").strip()),
         "description": description,
         "query_result": formatted_result if formatted_result else True
       }
     except MySQLdb.Error as e:
       return {
+        "status": "error",
         "query": re.sub(' +', ' ', query.replace("\n", "").replace("\t", "").strip()),
         "error": str(e),
       }

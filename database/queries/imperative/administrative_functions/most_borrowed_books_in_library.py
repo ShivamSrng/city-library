@@ -27,6 +27,19 @@ class MostBorrowedBooksInLibrary:
       dict: A dictionary containing the metadata of the most borrowed books in the library
     """
     
+    query_to_check_library_name = f"""
+    SELECT COUNT(*)
+    FROM BRANCH
+    WHERE BRANCH.BNAME = '{library_name}';
+    """
+    result_of_query_to_check_library_name = self.database_utilities.format_query_result(
+      query=query_to_check_library_name,
+      description="Check if the library name exists."
+    )
+    if result_of_query_to_check_library_name["query_result"][0]["COUNT(*)"] == 0:
+      result_of_query_to_check_library_name["descriptive_error"] = "Library name does not exist."
+      return result_of_query_to_check_library_name
+    
     query = f"""
     SELECT BOR.DOCID, DOC.TITLE, BO.ISBN
     FROM BORROWS AS BOR, BOOK AS BO, DOCUMENT AS DOC

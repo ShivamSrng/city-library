@@ -27,6 +27,19 @@ class MostBorrowedBooksInBranch:
       dict: A dictionary containing the metadata of the most frequently borrowing users
     """
     
+    query_to_check_branch_no = f"""
+    SELECT COUNT(*)
+    FROM BRANCH
+    WHERE BRANCH.BID = '{branch_no}';
+    """
+    result_of_query_to_check_branch_no = self.database_utilities.format_query_result(
+      query=query_to_check_branch_no,
+      description="Check if the branch number exists."
+    )
+    if result_of_query_to_check_branch_no["query_result"][0]["COUNT(*)"] == 0:
+      result_of_query_to_check_branch_no["descriptive_error"] = "Branch number does not exist."
+      return result_of_query_to_check_branch_no
+    
     query = f"""
     SELECT BO.DOCID, DOC.TITLE, BO.ISBN, COUNT(*) AS NO_OF_TIMES_BORROWED
     FROM BOOK AS BO, DOCUMENT AS DOC, COPY AS COP, BORROWS AS BOR

@@ -377,18 +377,20 @@ class DatabaseEngine:
     return MostBorrowedBooksInBranch(self.connection).execute(limit, branch_no)
   
 
-  def computeFineCollectedByBranch(self, startdatetime: str, enddatetime: str) -> dict:
+  def computeFineCollectedByBranch(self, startdatetime: str, enddatetime: str, branchid: str) -> dict:
     """
     Get a start date S and an end date E as input and print, for each branch, the branch Id and name and the average fine paid by the borrowers for documents borrowed from this branch during the corresponding period of time.
 
     Args:
-      branch_no (str): The branch_no to compute the fine collected for
+      startdatetime (str): The start date to compute the fine collected for
+      enddatetime (str): The end date to compute the fine collected for
+      branchid (str): The branch_no to compute the fine collected for
     
     Returns:
       dict: A dictionary containing the fine collected details
     """
 
-    return ComputeFineCollectedByBranch(self.connection).execute(startdatetime, enddatetime)
+    return ComputeFineCollectedByBranch(self.connection).execute(startdatetime, enddatetime, branchid)
   
 
   def mostBorrowedBooksInLibrary(self, limit: int, library_name: str) -> dict:
@@ -421,18 +423,19 @@ class DatabaseEngine:
     return MostFrequentlyBorrowers(self.connection).execute(limit, branch_no)
   
 
-  def mostPopularBookInLibraryInYear(self, year: int) -> dict:
+  def mostPopularBookInLibraryInYear(self, year: int, library_name: str) -> dict:
     """
     Used to get the most popular book in the library in a year
 
     Args:
       year (int): The year to get the most popular book in the library
+      library_name (str): The library name to get the most popular book in the year
     
     Returns:
       dict: A dictionary containing the metadata of the most popular book in the library in a year
     """
 
-    return MostPopularBookInLibraryInYear(self.connection).execute(year)
+    return MostPopularBookInLibraryInYear(self.connection).execute(year, library_name)
   
 
   def mostFrequentBorrowersOfLibrary(self, limit: int, library_name: str) -> dict:

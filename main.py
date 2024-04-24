@@ -346,24 +346,27 @@ def retrieveBranchInformation(
 
 
 @app.get(
-	path="/cityLibrary/admin/computeFineCollectedByBranch/{startdatetime}/{enddatetime}",
+	path="/cityLibrary/admin/computeFineCollectedByBranch/{startdatetime}/{enddatetime}/{branch_id}",
 	tags=["imperative admin"],
 	description="Get a start date S and an end date E as input and print, for each branch, the branch Id and name and the average fine paid by the borrowers for documents borrowed from this branch during the corresponding period of time."
 )
 def computeFineCollectedByBranch(
 	startdatetime: str,
 	enddatetime: str,
+	branch_id: str,
 ):
 	"""
 	Get a start date S and an end date E as input and print, for each branch, the branch Id and name and the average fine paid by the borrowers for documents borrowed from this branch during the corresponding period of time.
 	
 	Args:
+		startdatetime (str): The startdatetime to compute the fine collected for
+		enddatetime (str): The enddatetime to compute the fine collected for
 		branch_id (str): The branch_id to compute the fine collected for
 	
 	Returns:
 		dict: A dictionary containing the fine collected details
 	"""
-	return dbengine.computeFineCollectedByBranch(startdatetime=startdatetime, enddatetime=enddatetime)
+	return dbengine.computeFineCollectedByBranch(startdatetime=startdatetime, enddatetime=enddatetime, branchid=branch_id)
 
 
 @app.get(
@@ -389,23 +392,25 @@ def mostFrequentBorrowersOfLibrary(
 
 
 @app.get(
-	path="/cityLibrary/admin/mostPopularBookInLibraryInYear/{year}",
+	path="/cityLibrary/admin/mostPopularBookInLibraryInYear/{year}/{library_name}",
 	tags=["imperative admin"],
 	description="Get a year as input and print the 10 most popular books of that year in the library."
 )
 def mostPopularBookInLibraryInYear(
 	year: int,
+	library_name: str,
 ):
 	"""
 	Get a year as input and print the 10 most popular books of that year in the library.
 	
 	Args:
 		year (int): The year to get the most popular book in the library
+		library_name (str): The name of the library to get the most popular book in the year
 	
 	Returns:
 		dict: A dictionary containing the metadata of the most popular book in the library in a year
 	"""
-	return dbengine.mostPopularBookInLibraryInYear(year)
+	return dbengine.mostPopularBookInLibraryInYear(year, library_name)
 
 
 @app.get(

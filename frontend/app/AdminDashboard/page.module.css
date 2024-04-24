@@ -83,6 +83,17 @@
   padding: 0 0;
 }
 
+.submitButton {
+  width: 20%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.5rem;
+  background-color: black;
+  border-radius: 5rem;
+  color: rgb(243, 181, 106);
+  cursor: pointer;
+}
+
 .outputContainer {
   width: 100%;
   height: 100%;

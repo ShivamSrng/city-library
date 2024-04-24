@@ -7,6 +7,10 @@ import AddAReader from '../AdminFunctions/AddAReader/page'
 import RetrieveBranchInformation from '../AdminFunctions/RetrieveBranchInformation/page'
 import MostFrequentBorrowerOfBranch from '../AdminFunctions/MostFrequentBorrowersOfBranch/page'
 import MostFrequentBorrowerOfLibrary from '../AdminFunctions/MostFrequentBorrowerOfLibrary/page'
+import MostBorrowedBooksInBranch from '../AdminFunctions/MostBorrowedBooksInBranch/page'
+import MostBorrowedBooksInLibrary from '../AdminFunctions/MostBorrowedBooksOfLibrary/page'
+import MostPopularBooksInLibraryYear from '../AdminFunctions/MostPopularBookInLibraryYear/page'
+import ComputeFine from '../AdminFunctions/ComputeFine/page'
 
 
 const RenderFormTitle = ({index}) => {
@@ -30,7 +34,7 @@ const RenderFormTitle = ({index}) => {
     case 8:
       return "Get 10 most popular books of a year"
     case 9:
-      return "Get average fine paid by borrowers for documents borrowed from a branch during a period of time"
+      return "Get average fine paid by borrowers to a branch"
   }
 }
 
@@ -48,6 +52,14 @@ const RenderFormComponent = ({index}) => {
       return <MostFrequentBorrowerOfBranch />
     case 5:
       return <MostFrequentBorrowerOfLibrary />
+    case 6:
+      return <MostBorrowedBooksInBranch />
+    case 7:
+      return <MostBorrowedBooksInLibrary />
+    case 8:
+      return <MostPopularBooksInLibraryYear />
+    case 9:
+      return <ComputeFine />
   }
 }
 
@@ -101,11 +113,32 @@ const adminDashboard = () => {
                     setIsSelected(5)
                   }
                 }>Get number N as input and print the top N most frequent borrowers (Rid and name) in the library and the number of books each has borrowed.</li>
-                <li>Get number N and branch number I as input and print the N most borrowed books in branch I.</li>
-                <li>Get number N as input and print the N most borrowed books in the library.</li>
-                <li>Get a year as input and print the 10 most popular books of that year in the library.</li>
-                <li>Get a start date S and an end date E as input and print, for each branch, the branch Id and name and the average fine paid by the borrowers for documents borrowed from this branch during the corresponding period of time.</li>
+                <li onClick={
+                  async () => {
+                    setFormTitle("Get N most borrowed books in branch I")
+                    setIsSelected(6)
+                  }
+                }>Get number N and branch number I as input and print the N most borrowed books in branch I.</li>
+                <li onClick={
+                  async () => {
+                    setFormTitle("Get N most borrowed books in the library")
+                    setIsSelected(7)
+                  }
+                }>Get number N as input and print the N most borrowed books in the library.</li>
+                <li onClick={
+                  async () => {
+                    setFormTitle("Get 10 most popular books of a year")
+                    setIsSelected(8)
+                  }
+                }>Get a year as input and print the 10 most popular books of that year in the library.</li>
+                <li onClick={
+                  async () => {
+                    setFormTitle("Get average fine paid by borrowers to a branch")
+                    setIsSelected(9)
+                  }
+                }>Get a start date S and an end date E as input and print, for each branch, the branch Id and name and the average fine paid by the borrowers for documents borrowed from this branch during the corresponding period of time.</li>
               </ol>
+              <button className={styles.submitButton} onClick={() => window.location.href = '/'}>Logout</button>
             </div>
           </div>
 

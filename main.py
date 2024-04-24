@@ -607,9 +607,9 @@ def clearDatabase():
 
 
 if __name__ == "__main__":
-    uvicorn.run(
-      app="main:app", 
-      reload=True, 
-    	host="localhost", 
-      port=8000
-    )
+	uvicorn.run(
+		app="main:app", 
+		reload=True, 
+		host="localhost", 
+		port=8000
+	)

@@ -433,7 +433,7 @@ class InsertFakeData:
       dict: The status of the insertion of fake document data
     """
     
-    self.fake_record_insertion_limit *= 5
+    self.fake_record_insertion_limit *= 1
     for i in tqdm(range(self.fake_record_insertion_limit), total=self.fake_record_insertion_limit, desc="Inserting fake document data"):
       fake_docid = "DOC" + self.fake_profile.password(length=6, special_chars=False, digits=True, upper_case=True, lower_case=False)
       fake_title = self.fake_profile.document_title().title()
@@ -530,8 +530,13 @@ class InsertFakeData:
       if fake_reader_id in self.readers_borrows:
         self.readers_borrows[fake_reader_id] += 1
         while self.readers_borrows[fake_reader_id] > 10:
-          fake_reader_id = self.reader_data.sample(n=1)["RID"].values[0]
-          if fake_reader_id not in self.readers_borrows or self.readers_borrows[fake_reader_id] <= 10:
+          if fake_reader_id in self.readers_borrows and self.readers_borrows[fake_reader_id] <= 10:
+            self.readers_borrows[fake_reader_id] += 1
+          elif fake_reader_id not in self.readers_borrows or self.readers_borrows[fake_reader_id] <= 10:
+            if fake_reader_id not in self.readers_borrows:
+              self.readers_borrows[fake_reader_id] = 1
+            else:
+              self.readers_borrows[fake_reader_id] += 1
             break
       else:
         self.readers_borrows[fake_reader_id] = 1
@@ -594,8 +599,13 @@ class InsertFakeData:
         self.readers_reserves[fake_reader_id] += 1
         while self.readers_reserves[fake_reader_id] > 10:
           fake_reader_id = self.reader_data.sample(n=1)["RID"].values[0]
-          if fake_reader_id not in self.readers_reserves or self.readers_reserves[fake_reader_id] <= 10:
+          if fake_reader_id in self.readers_reserves and self.readers_reserves[fake_reader_id] <= 10:
             self.readers_reserves[fake_reader_id] += 1
+          elif fake_reader_id not in self.readers_reserves or self.readers_reserves[fake_reader_id] <= 10:
+            if fake_reader_id not in self.readers_reserves:
+              self.readers_reserves[fake_reader_id] = 1
+            else:
+              self.readers_reserves[fake_reader_id] += 1
             break
       else:
         self.readers_reserves[fake_reader_id] = 1

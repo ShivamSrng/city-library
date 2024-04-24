@@ -1,8 +1,17 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from database.database_engine import DatabaseEngine
 
 app = FastAPI()
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 dbengine = DatabaseEngine()
 
 
@@ -222,6 +231,28 @@ def getDocumentByPublisherNameConstrained(
 	"""
 	return dbengine.getDocumentByPublisherNameConstrained(publisher_name)
 
+
+
+@app.get(
+	path="/cityLibrary/admin/validation/{username}/{password}",
+	tags=["imperative admin"],
+	description="Validate the admin using the given parameters"
+)
+def validation(
+	username: str,
+	password: str,
+):
+	"""
+	Validate the admin using the given parameters
+	
+	Args:
+		username (str): The username to validate
+		password (str): The password to validate
+	
+	Returns:
+		dict: A dictionary containing the validation details
+	"""
+	return dbengine.validateAdminData(username, password)
 
 @app.get(
 	path="/cityLibrary/admin/addDocumentCopy/{document_id}/{branch_id}",
@@ -446,6 +477,25 @@ def mostBorrowedBooksInBranch(
 
 # ---------------------------------------------------------------#
 # requisite
+
+@app.get(
+	path="/cityLibrary/insertAdminsData",
+	tags=["requisite"],
+	description="Insert data into the ADMINS table"
+)
+def insertAdminsData():
+	"""
+	Insert data into the ADMINS table
+	
+	Args:
+		None
+	
+	Returns:
+		dict: A dictionary containing the metadata of the database after inserting the data
+	"""
+	return dbengine.insertAdminsData()
+
+
 @app.get(
 	path="/cityLibrary/createAndPopulateDatabase", 
 	tags=["requisite"], 

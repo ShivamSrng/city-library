@@ -1,0 +1,90 @@
+.adminDashboardContainer {
+  min-height: 100vh;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  z-index: 1;
+  left: 6vw;
+}
+
+.title {
+  font-size: 5.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.dataContainer {
+  height: 85vh;
+  width: 85vw;
+  overflow: hidden;
+  display: flex;
+  border-radius: 5rem;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  gap: 2rem;
+  background-color: rgb(243, 181, 106);
+}
+
+.titleContainer {
+  width: 100%;
+  color: black;
+  font-size: 1.8rem;
+  justify-content: center;
+  display: flex;
+}
+
+.adminMenu {
+  width: 100%;
+  height: 100%;
+  color: black;
+  border-radius: 5rem;
+  padding: 1rem;
+}
+
+.adminMenu ol li {
+  font-size: 1.4rem;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.respectiveFormContainer {
+  width: 100%;
+  height: 100%;
+  color: black;
+  background-color: white;
+  border-radius: 5rem;
+  border: 2px solid black;
+  overflow: hidden;
+}
+
+.formTitleContainer {
+  width: 100%;
+  min-height: 15%;
+  max-height: 15%;
+  background-color: black;
+  color: white;
+  overflow: hidden;
+}
+
+.formTitleContainer h2 {
+  font-size: 2rem;
+  padding: 1rem 3rem
+}
+
+.formContainer {
+  width: 100%;
+  min-height: 85%;
+  max-height: 85%;
+  overflow: hidden;
+  padding: 1rem 0;
+}
+
+.outputContainer {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}

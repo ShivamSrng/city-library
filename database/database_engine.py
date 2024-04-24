@@ -10,6 +10,7 @@ from database.queries.imperative.reader_functions.document_reserve import Docume
 from database.queries.imperative.reader_functions.reserved_documents import ReservedDocument
 from database.queries.imperative.reader_functions.compute_fine import ComputeFine
 
+from database.queries.imperative.administrative_functions.validate_admin_data import ValidateAdminData
 from database.queries.imperative.administrative_functions.add_document_copy import AddDocumentCopy
 from database.queries.imperative.administrative_functions.search_document_copy import SearchDocumentCopy
 from database.queries.imperative.administrative_functions.add_reader import AddReader
@@ -24,6 +25,7 @@ from database.queries.imperative.administrative_functions.most_frequent_borrower
 
 # requisite
 from database.queries.requisite.table_creation import TableCreation
+from database.queries.requisite.insert_admins_data import InsertAdminsData
 from database.queries.requisite.populate_all_tables import PopulateAllTables
 
 # superfluous
@@ -79,6 +81,20 @@ class DatabaseEngine:
       sys.exit(1)
 
 
+  def insertAdminsData(self) -> dict:
+    """
+    Used to insert the admins data into the ADMINS table
+    
+    Args:
+      None
+    
+    Returns:
+      dict: The status of the query execution along with the query and metadata
+    """
+    
+    return InsertAdminsData(self.connection).execute()
+  
+
   def prepareDatabase(self) -> dict:
     """
     Used to prepare the database by creating the tables
@@ -90,6 +106,7 @@ class DatabaseEngine:
       dict: The status of the query execution along with the query and metadata
     """
     
+    InsertAdminsData(self.connection).execute()
     return TableCreation(self.connection).create_tables()
 
 
@@ -104,6 +121,7 @@ class DatabaseEngine:
       dict: The status of the query execution along with the query and metadata
     """
     
+    InsertAdminsData(self.connection).execute()
     return PopulateAllTables(self.connection, self.fake_data_constants.getFakeDataConfig()).insert_random_data()
   
 
@@ -240,6 +258,20 @@ class DatabaseEngine:
 
     return DocumentReturn(self.connection).execute(bor_no, docid, copyno, bid)
   
+
+  def validateAdminData(self, username: str, password: str) -> bool:
+    """
+    Used to validate the admin data
+    
+    Args:
+      username (str): The username to validate
+      password (str): The password to validate
+    
+    Returns:
+      bool: A boolean indicating if the admin data is valid or not
+    """
+
+    return ValidateAdminData(self.connection).execute(username, password)
 
   def getDocumentByPublisherNameConstrained(self, publisher_name: str) -> dict:
     """

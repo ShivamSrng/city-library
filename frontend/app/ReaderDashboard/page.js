@@ -36,7 +36,7 @@ const RenderFormTitle = ({index}) => {
   }
 }
 
-const RenderFormComponent = ({index}) => {
+const RenderFormComponent = ({index, readerid, readername}) => {
   switch(index) {
     case 0:
       return <SearchADocumentByID />
@@ -51,9 +51,9 @@ const RenderFormComponent = ({index}) => {
     case 5:
       return <MostFrequentBorrowerOfLibrary />
     case 6:
-      return <ComputeFine />
+      return <ComputeFine readerid={readerid} readername={readername} />
     case 7:
-      return <GetReservedDocuments />
+      return <GetReservedDocuments readerid={readerid} readername={readername} />
     case 8:
       return <SearchADocumentByPublisherNameConstrained />
   }
@@ -140,7 +140,7 @@ const adminDashboard = () => {
               <h2>{RenderFormTitle({index: isSelected})}</h2>
             </div>
             <div className={styles.formContainer}>
-              {RenderFormComponent({index: isSelected})}
+              {RenderFormComponent({index: isSelected, readerid: readerid, readername: readername})}
             </div>
           </div>
         </div>

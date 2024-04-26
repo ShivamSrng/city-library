@@ -24,7 +24,7 @@ function jsonToTable(jsonData) {
   return tableHtml;
 }
 
-const searchADocumentByID = () => {
+const computeFine = ({readerid, readername}) => {
   return (
     <>
       <div className={styles.loginPageContainer}>
@@ -34,7 +34,7 @@ const searchADocumentByID = () => {
         <form className={styles.formContainer} onSubmit={
               async (event) => {
                 event.preventDefault()
-                const readerid = event.target.readerid.value
+                // const readerid = event.target.readerid.value
                 const dynamicapi = 'http://localhost:8000/cityLibrary/reader/computeFine/' + readerid
                 const response = await fetch(dynamicapi)
                 const data = await response.json()
@@ -52,15 +52,15 @@ const searchADocumentByID = () => {
                 {
                   content += "<p>You do not have any fine imposed.</p>";
                 }
-                content += "<button style='width: 20%; margin: 1rem 0rem; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/ReaderDashboard'\">Close</button>";
+                content += "<button style='cursor: pointer; width: 20%; margin: 1rem 0rem; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/ReaderDashboard"  + '?readerid=' + readerid + '&readername=' + readername + "'\">Close</button>";
                 content += "</div>";
                 resultOverlay.innerHTML = content;
               }
           }>
-          <div className={styles.placeHolder}>
+          {/* <div className={styles.placeHolder}>
             <label className={styles.label} htmlFor="username">Reader ID: </label>
             <input className={styles.input} type="text" id="readerid" name="username" required/>
-          </div>
+          </div> */}
           
           <div className={styles.buttonPlaceHolder}>
             <button className={styles.submitButton} type="submit">My Fine</button>
@@ -74,4 +74,4 @@ const searchADocumentByID = () => {
   )
 }
 
-export default searchADocumentByID
+export default computeFine

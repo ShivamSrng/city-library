@@ -39,23 +39,23 @@ const RenderFormTitle = ({index}) => {
 const RenderFormComponent = ({index, readerid, readername}) => {
   switch(index) {
     case 0:
-      return <SearchADocumentByID />
+      return <SearchADocumentByID readerid={readerid} readername={readername} />
     case 1:
-      return <SearchADocumentByTitle />
+      return <SearchADocumentByTitle readerid={readerid} readername={readername} />
     case 2:
-      return <SearchADocumentByPublisherName />
-    case 3:
-      return <RetrieveBranchInformation />
-    case 4:
-      return <MostFrequentBorrowerOfBranch />
-    case 5:
-      return <MostFrequentBorrowerOfLibrary />
+      return <SearchADocumentByPublisherName readerid={readerid} readername={readername} />
+    // case 3:
+    //   return <RetrieveBranchInformation readerid={readerid} readername={readername} />
+    // case 4:
+    //   return <MostFrequentBorrowerOfBranch readerid={readerid} readername={readername} />
+    // case 5:
+    //   return <MostFrequentBorrowerOfLibrary readerid={readerid} readername={readername} />
     case 6:
       return <ComputeFine readerid={readerid} readername={readername} />
     case 7:
       return <GetReservedDocuments readerid={readerid} readername={readername} />
     case 8:
-      return <SearchADocumentByPublisherNameConstrained />
+      return <SearchADocumentByPublisherNameConstrained readerid={readerid} readername={readername} />
   }
 }
 

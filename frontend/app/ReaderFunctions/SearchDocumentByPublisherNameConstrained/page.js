@@ -24,7 +24,7 @@ function jsonToTable(jsonData) {
   return tableHtml;
 }
 
-const searchADocumentByID = () => {
+const searchADocumentByID = ({readerid, readername}) => {
   return (
     <>
       <div className={styles.loginPageContainer}>
@@ -53,7 +53,7 @@ const searchADocumentByID = () => {
                 {
                   content += "<p>No Document with Published by '" + publishername + "' exists. Please check the Publisher Name again.</p>";
                 }
-                content += "<button style='width: 20%; margin-top: 1rem; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/ReaderDashboard'\">Close</button>";
+                content += "<button style='cursor: pointer; width: 20%; margin: 1rem 0rem; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/ReaderDashboard"  + '?readerid=' + readerid + '&readername=' + readername + "'\">Close</button>";
                 content += "</div>";
                 resultOverlay.innerHTML = content;
               }

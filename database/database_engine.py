@@ -32,6 +32,7 @@ from database.queries.requisite.populate_all_tables import PopulateAllTables
 # superfluous
 from database.queries.superfluous.show_all_tables import ShowAllTables
 from database.queries.superfluous.clear_database import ClearDatabase
+from database.queries.superfluous.get_reader_name import GetReaderName
 
 
 class DatabaseEngine:
@@ -466,3 +467,17 @@ class DatabaseEngine:
     """
 
     return MostFrequentBorrowersOfLibrary(self.connection).execute(limit, library_name)
+
+
+  def getReaderName(self, reader_id: str) -> dict:
+    """
+    Used to get the name of a reader from the database
+
+    Args:
+      reader_id (str): The id of the reader
+    
+    Returns:
+      dict: The name of the reader and other information
+    """
+
+    return GetReaderName(self.connection).execute(reader_id)

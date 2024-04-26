@@ -624,6 +624,26 @@ def clearDatabase():
 	return dbengine.clearDatabase()
 
 
+@app.get(
+	path="/cityLibrary/getReaderName/{reader_id}", 
+	tags=["superfluous"], 
+	description="Get the name of the reader from the database"
+)
+def getReaderName(
+	reader_id: str,
+):
+	"""
+	Get the name of the reader from the database
+	
+	Args:
+		reader_id (str): The id of the reader
+	
+	Returns:
+		dict: The name of the reader and other information
+	"""
+	return dbengine.getReaderName(reader_id)
+
+
 # ---------------------------------------------------------------#-
 
 

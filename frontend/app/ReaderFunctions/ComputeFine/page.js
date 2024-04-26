@@ -34,7 +34,6 @@ const computeFine = ({readerid, readername}) => {
         <form className={styles.formContainer} onSubmit={
               async (event) => {
                 event.preventDefault()
-                // const readerid = event.target.readerid.value
                 const dynamicapi = 'http://localhost:8000/cityLibrary/reader/computeFine/' + readerid
                 const response = await fetch(dynamicapi)
                 const data = await response.json()
@@ -57,11 +56,6 @@ const computeFine = ({readerid, readername}) => {
                 resultOverlay.innerHTML = content;
               }
           }>
-          {/* <div className={styles.placeHolder}>
-            <label className={styles.label} htmlFor="username">Reader ID: </label>
-            <input className={styles.input} type="text" id="readerid" name="username" required/>
-          </div> */}
-          
           <div className={styles.buttonPlaceHolder}>
             <button className={styles.submitButton} type="submit">My Fine</button>
           </div>

@@ -17,7 +17,11 @@ const readerloginpage = () => {
               const response = await fetch(dynamicapi)
               const data = await response.json()
               if (data.hasOwnProperty('descriptive_error') === false) {
-                window.location.href = '/ReaderDashboard'
+                const apireadername = 'http://localhost:8000/cityLibrary/getReaderName/' + readerid
+                const readername = await fetch(apireadername)
+                const readerdata = await readername.json()
+                const readerName = readerdata.query_result[0].RNAME
+                window.location.href = '/ReaderDashboard' + '?readerid=' + readerid + '&readername=' + readerName
               } else {
                 alert(data.descriptive_error)
               }

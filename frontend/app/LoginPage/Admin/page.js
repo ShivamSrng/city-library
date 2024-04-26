@@ -19,7 +19,7 @@ function adminloginPage() {
               const response = await fetch(dynamicapi)
               const data = await response.json()
               if (data.result) {
-                window.location.href = '/AdminDashboard'
+                window.location.href = '/AdminDashboard'+ '?username=' + username
               } else {
                 alert('Login Failed')
               }

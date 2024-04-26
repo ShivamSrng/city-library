@@ -62,13 +62,16 @@ const RenderFormComponent = ({index}) => {
 const adminDashboard = () => {
   const[formTitle, setFormTitle] = useState("Search a document by ID.")
   const[isSelected, setIsSelected] = useState(0)
+  const queryParameters = new URLSearchParams(window.location.search)
+  const readerid = queryParameters.get('readerid')
+  const readername = queryParameters.get('readername')
   return (
     <>
       <div className={styles.adminDashboardContainer}>
         <div className={styles.dataContainer}>
           <div className={styles.splitContainer}>
             <div className={styles.titleContainer}>
-              <h1>Reader Panel</h1>
+            <h1>Hello, <span className={styles.titleUsername}>{readername}</span> !</h1>
             </div>
             <div className={styles.adminMenu}>
               <div><h2>Reader's Functions Menu</h2></div>

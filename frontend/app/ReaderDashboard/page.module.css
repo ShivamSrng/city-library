@@ -36,6 +36,10 @@
   display: flex;
 }
 
+.titleUsername{
+  color: white;
+}
+
 .adminMenu {
   width: 47.5vw;
   height: 100%;

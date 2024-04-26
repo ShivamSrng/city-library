@@ -1,10 +1,8 @@
 'use client';
-import Link from "next/link";
 import { useEffect } from 'react';
 import styles from "./page.module.css";
 import Admin from './LoginPage/Admin/page'
 import Reader from './LoginPage/Reader/page'
-
 
 
 export default function Home() {

@@ -66,13 +66,16 @@ const RenderFormComponent = ({index}) => {
 const adminDashboard = () => {
   const[formTitle, setFormTitle] = useState("Add A Document Copy")
   const[isSelected, setIsSelected] = useState(0)
+  const queryParameters = new URLSearchParams(window.location.search)
+  var username = queryParameters.get('username')
+  var username = username.charAt(0).toUpperCase() + username.slice(1)
   return (
     <>
       <div className={styles.adminDashboardContainer}>
         <div className={styles.dataContainer}>
           <div className={styles.splitContainer}>
             <div className={styles.titleContainer}>
-              <h1>Admin Panel</h1>
+              <h1>Hello, <span className={styles.titleUsername}>{username}</span> !</h1>
             </div>
             <div className={styles.adminMenu}>
               <div><h2>Administrative Functions Menu</h2></div>

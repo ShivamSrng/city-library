@@ -178,15 +178,14 @@ class InsertFakeData:
       dict: The status of the insertion of fake borrowing data
     """
     
-    for i in tqdm(range(self.fake_record_insertion_limit), total=self.fake_record_insertion_limit, desc="Inserting fake borrowing data"):
-      random_day = random.randint(1, 50)
+    borrowing_data_limit = self.fake_record_insertion_limit * 10
+    for i in tqdm(range(borrowing_data_limit), total=borrowing_data_limit, desc="Inserting fake borrowing data"):
+      random_day = random.randint(18, 50)
       fake_borno = "BOR" + self.fake_profile.password(length=6, special_chars=False, digits=True, upper_case=True, lower_case=False)
       fake_rdtime = datetime.datetime.now()
-      temp, prev_temp = fake_rdtime, fake_rdtime
-      for j in range(random_day):
-        temp -= datetime.timedelta(days=1, hours=random.randint(1, 23), minutes=random.randint(1, 59), seconds=random.randint(1, 59))
-      fake_rdtime = prev_temp.strftime("%Y-%m-%d %H:%M:%S")
-      fake_bdtime = temp.strftime("%Y-%m-%d %H:%M:%S")
+      fake_bdtime = fake_rdtime - datetime.timedelta(days=random_day, hours=random.randint(1, 23), minutes=random.randint(1, 59), seconds=random.randint(1, 59))
+      fake_rdtime = fake_rdtime.strftime("%Y-%m-%d %H:%M:%S")
+      fake_bdtime = fake_bdtime.strftime("%Y-%m-%d %H:%M:%S")
       row_to_append = pd.DataFrame([{
         "BOR_NO": fake_borno,
         "BDTIME": fake_bdtime,
@@ -224,9 +223,13 @@ class InsertFakeData:
       dict: The status of the insertion of fake reservation data
     """
     
-    for i in tqdm(range(self.fake_record_insertion_limit), total=self.fake_record_insertion_limit, desc="Inserting fake reservation data"):
+    reservation_data_limit = self.fake_record_insertion_limit * 10
+    for i in tqdm(range(reservation_data_limit), total=reservation_data_limit, desc="Inserting fake reservation data"):
       fake_resno = "RES" + self.fake_profile.password(length=6, special_chars=False, digits=True, upper_case=True, lower_case=False)
-      fake_dtime = self.fake_profile.date_time().strftime("%Y-%m-%d %H:%M:%S")
+      fake_dtime = datetime.datetime.now()
+      random_day = random.randint(15, 50)
+      fake_dtime -= datetime.timedelta(days=random_day, hours=random.randint(1, 23), minutes=random.randint(1, 59), seconds=random.randint(18, 59))
+      fake_dtime = fake_dtime.strftime("%Y-%m-%d %H:%M:%S")
       row_to_append = pd.DataFrame([{
         "RES_NO": fake_resno,
         "DTIME": fake_dtime
@@ -263,7 +266,8 @@ class InsertFakeData:
       dict: The status of the insertion of fake reader data
     """
     
-    for i in tqdm(range(self.fake_record_insertion_limit), total=self.fake_record_insertion_limit, desc="Inserting fake reader data"):
+    reader_insertion_limit = self.fake_record_insertion_limit * 12
+    for i in tqdm(range(reader_insertion_limit), total=reader_insertion_limit, desc="Inserting fake reader data"):
       fake_profile = self.fake_profile.profile()
       fake_readerId = fake_profile['ssn'].replace('-', '')
       fake_readerType = self.fake_profile.reader_type().title()
@@ -433,8 +437,8 @@ class InsertFakeData:
       dict: The status of the insertion of fake document data
     """
     
-    self.fake_record_insertion_limit *= 1
-    for i in tqdm(range(self.fake_record_insertion_limit), total=self.fake_record_insertion_limit, desc="Inserting fake document data"):
+    document_insertion_limit = self.fake_record_insertion_limit * 10
+    for i in tqdm(range(document_insertion_limit), total=document_insertion_limit, desc="Inserting fake document data"):
       fake_docid = "DOC" + self.fake_profile.password(length=6, special_chars=False, digits=True, upper_case=True, lower_case=False)
       fake_title = self.fake_profile.document_title().title()
       fake_docpubdate = self.fake_profile.date_time().strftime("%Y-%m-%d")
@@ -477,27 +481,30 @@ class InsertFakeData:
       dict: The status of the insertion of fake copy data
     """
     
-    for i in tqdm(range(self.fake_record_insertion_limit), total=self.fake_record_insertion_limit, desc="Inserting fake copy data"):
-      fake_docid = self.document_data.sample(n=1)["DOCID"].values[0]
-      fake_copyno = "COP" + self.fake_profile.password(length=6, special_chars=False, digits=True, upper_case=True, lower_case=False)
-      fake_bid = self.branch_data.sample(n=1)["BID"].values[0]
-      fake_position = self.fake_profile.password(length=3, special_chars=False, digits=True, upper_case=False, lower_case=False) + self.fake_profile.password(length=3, special_chars=False, digits=True, upper_case=True, lower_case=False)
-      row_to_append = pd.DataFrame([{
-        "DOCID": fake_docid,
-        "COPYNO": fake_copyno,
-        "BID": fake_bid,
-        "POSITION": fake_position
-      }])
-      self.copy_data = pd.concat([self.copy_data, row_to_append], ignore_index=True)
-      copy_data_inserting_query = self.__frame_dynamic_insert_query(
-        table_name="COPY",
-        columns=["DOCID", "COPYNO", "BID", "POSITION"],
-        dtype=["str", "str", "str", "str"],
-        values=[fake_docid, fake_copyno, fake_bid, fake_position]
-      )
-      self.__execute_insert_query(
-        query = copy_data_inserting_query
-      )
+    list_of_docids = self.document_data["DOCID"].values
+    for i in tqdm(range(len(list_of_docids)), total=len(list_of_docids), desc="Inserting fake copy data"):
+      fake_docid = list_of_docids[i]
+      for j in range(random.randint(10, 20)):
+        fake_copyno = "COP" + self.fake_profile.password(length=6, special_chars=False, digits=True, upper_case=True, lower_case=False)
+        for k in range(random.randint(5, 10)):
+          fake_bid = self.branch_data.sample(n=1)["BID"].values[0]
+          fake_position = self.fake_profile.password(length=3, special_chars=False, digits=True, upper_case=False, lower_case=False) + self.fake_profile.password(length=3, special_chars=False, digits=True, upper_case=True, lower_case=False)
+          row_to_append = pd.DataFrame([{
+            "DOCID": fake_docid,
+            "COPYNO": fake_copyno,
+            "BID": fake_bid,
+            "POSITION": fake_position
+          }])
+          self.copy_data = pd.concat([self.copy_data, row_to_append], ignore_index=True)
+          copy_data_inserting_query = self.__frame_dynamic_insert_query(
+            table_name="COPY",
+            columns=["DOCID", "COPYNO", "BID", "POSITION"],
+            dtype=["str", "str", "str", "str"],
+            values=[fake_docid, fake_copyno, fake_bid, fake_position]
+          )
+          self.__execute_insert_query(
+            query = copy_data_inserting_query
+          )
     actual_copy_record_count = self.__get_actual_record_count("COPY")
     return {
       "status": "success",
@@ -520,43 +527,62 @@ class InsertFakeData:
       dict: The status of the insertion of fake borrows data
     """
     
-    for i in tqdm(range(self.fake_record_insertion_limit), total=self.fake_record_insertion_limit, desc="Inserting fake borrows data"):
-      fake_borrows_borno = self.borrowing_data.sample(n=1)["BOR_NO"].values[0]
-      fake_sample = self.copy_data.sample(n=1)
-      fake_borrows_docid = fake_sample["DOCID"].values[0]
-      fake_borrows_copyno = fake_sample["COPYNO"].values[0]
-      fake_borrows_bid = fake_sample["BID"].values[0]
-      fake_reader_id = self.reader_data.sample(n=1)["RID"].values[0]
-      if fake_reader_id in self.readers_borrows:
-        self.readers_borrows[fake_reader_id] += 1
-        while self.readers_borrows[fake_reader_id] > 10:
-          if fake_reader_id in self.readers_borrows and self.readers_borrows[fake_reader_id] <= 10:
-            self.readers_borrows[fake_reader_id] += 1
-          elif fake_reader_id not in self.readers_borrows or self.readers_borrows[fake_reader_id] <= 10:
-            if fake_reader_id not in self.readers_borrows:
-              self.readers_borrows[fake_reader_id] = 1
+    list_of_bor_no = self.borrowing_data["BOR_NO"].values
+    i, r = 0, -1
+    progress_bar = tqdm(total=len(list_of_bor_no), desc="Inserting fake borrows data")
+    while i < len(list_of_bor_no):
+      r += 1
+      for l in range(random.randint(2, 5)):
+        if i < len(list_of_bor_no):
+          fake_borrows_borno = list_of_bor_no[i]
+        else:
+          print("Borrowing data limit reached")
+          break
+        i += 1
+
+        if r < len(self.reader_data):
+          fake_reader_id = self.reader_data["RID"].values[r]
+        else:
+          print("Reader data limit reached")
+          break
+        
+        list_of_accessed_bids = []
+        for j in range(random.randint(2, 4)):
+          while True:
+            fake_sample = self.copy_data.sample(n=1)
+            fake_borrows_bid = fake_sample["BID"].values[0]
+            if fake_borrows_bid not in list_of_accessed_bids:
+              list_of_accessed_bids.append(fake_borrows_bid)
+              break
             else:
-              self.readers_borrows[fake_reader_id] += 1
-            break
-      else:
-        self.readers_borrows[fake_reader_id] = 1
-      row_to_append = pd.DataFrame([{
-        "BOR_NO": fake_borrows_borno,
-        "DOCID": fake_borrows_docid,
-        "COPYNO": fake_borrows_copyno,
-        "BID": fake_borrows_bid,
-        "RID": fake_reader_id
-      }])
-      self.borrows_data = pd.concat([self.borrows_data, row_to_append], ignore_index=True)
-      borrows_data_inserting_query = self.__frame_dynamic_insert_query(
-        table_name="BORROWS",
-        columns=["BOR_NO", "DOCID", "COPYNO", "BID", "RID"],
-        dtype=["str", "str", "str", "str", "str"],
-        values=[fake_borrows_borno, fake_borrows_docid, fake_borrows_copyno, fake_borrows_bid, fake_reader_id]
-      )
-      self.__execute_insert_query(
-        query = borrows_data_inserting_query
-      )
+              continue
+          all_indices_of_borrows_bid = [i for i in range(len(self.copy_data)) if self.copy_data["BID"].values[i] == fake_borrows_bid]
+          limit = 10 if len(all_indices_of_borrows_bid) > 10 else len(all_indices_of_borrows_bid)
+          limit = random.randint(1, limit)
+          all_indices_of_borrows_bid = random.sample(all_indices_of_borrows_bid, limit)
+          for k in range(len(all_indices_of_borrows_bid)):
+            fake_sample = self.copy_data.iloc[all_indices_of_borrows_bid[k]]
+            fake_borrows_docid = fake_sample["DOCID"]
+            fake_borrows_copyno = fake_sample["COPYNO"]
+            row_to_append = pd.DataFrame([{
+              "BOR_NO": fake_borrows_borno,
+              "DOCID": fake_borrows_docid,
+              "COPYNO": fake_borrows_copyno,
+              "BID": fake_borrows_bid,
+              "RID": fake_reader_id
+            }])
+            self.borrows_data = pd.concat([self.borrows_data, row_to_append], ignore_index=True)
+            borrows_data_inserting_query = self.__frame_dynamic_insert_query(
+              table_name="BORROWS",
+              columns=["BOR_NO", "DOCID", "COPYNO", "BID", "RID"],
+              dtype=["str", "str", "str", "str", "str"],
+              values=[fake_borrows_borno, fake_borrows_docid, fake_borrows_copyno, fake_borrows_bid, fake_reader_id]
+            )
+            self.__execute_insert_query(
+              query = borrows_data_inserting_query
+            )
+        progress_bar.update(1)
+    progress_bar.close()
     actual_borrows_record_count = self.__get_actual_record_count("BORROWS")
     return {
       "status": "success",
@@ -579,53 +605,92 @@ class InsertFakeData:
       dict: The status of the insertion of fake reserves data
     """
     
-    for i in tqdm(range(self.fake_record_insertion_limit), total=self.fake_record_insertion_limit, desc="Inserting fake reserves data"):
-      fake_reserves_resno = self.reservation_data.sample(n=1)["RES_NO"].values[0]
-      fake_sample = self.copy_data.sample(n=1)
-      fake_reserves_docid = fake_sample["DOCID"].values[0]
-      fake_reserves_bid = fake_sample["BID"].values[0]
-      fake_copyno = fake_sample["COPYNO"].values[0]
-      if fake_reserves_docid not in self.borrows_data["DOCID"].values and fake_reserves_bid not in self.borrows_data["BID"].values and fake_copyno not in self.borrows_data["COPYNO"].values:
-        continue
-      else:
-        while fake_reserves_docid not in self.borrows_data["DOCID"].values and fake_reserves_bid not in self.borrows_data["BID"].values and fake_copyno not in self.borrows_data["COPYNO"].values:
-          fake_sample = self.copy_data.sample(n=1)
-          fake_reserves_docid = fake_sample["DOCID"].values[0]
-          fake_reserves_bid = fake_sample["BID"].values[0]
-          fake_copyno = fake_sample["COPYNO"].values[0]
+    list_of_res_no = self.reservation_data["RES_NO"].values
+    i, r = 0, 0
+    progess_bar = tqdm(total=len(list_of_res_no), desc="Inserting fake reserves data")
+    while i < len(list_of_res_no):
+      for l in range(random.randint(2, 5)):
+        if i < len(list_of_res_no):
+          fake_reserves_resno = list_of_res_no[i]
+        else:
+          print("Reservation data limit reached")
+          break
+        i += 1
+        if r < len(self.reader_data):
+          fake_reader_id = self.reader_data["RID"].values[r]
+        else:
+          print("Reader data limit reached")
+          break
 
-      fake_reader_id = self.reader_data.sample(n=1)["RID"].values[0]
-      if fake_reader_id in self.readers_reserves:
-        self.readers_reserves[fake_reader_id] += 1
-        while self.readers_reserves[fake_reader_id] > 10:
-          fake_reader_id = self.reader_data.sample(n=1)["RID"].values[0]
-          if fake_reader_id in self.readers_reserves and self.readers_reserves[fake_reader_id] <= 10:
-            self.readers_reserves[fake_reader_id] += 1
-          elif fake_reader_id not in self.readers_reserves or self.readers_reserves[fake_reader_id] <= 10:
-            if fake_reader_id not in self.readers_reserves:
-              self.readers_reserves[fake_reader_id] = 1
+        list_of_accessed_bids = []
+        for j in range(random.randint(2, 4)):
+          while True:
+            fake_sample = self.copy_data.sample(n=1)
+            fake_reserves_bid = fake_sample["BID"].values[0]
+            if fake_reserves_bid not in list_of_accessed_bids:
+              list_of_accessed_bids.append(fake_reserves_bid)
+              break
             else:
-              self.readers_reserves[fake_reader_id] += 1
-            break
-      else:
-        self.readers_reserves[fake_reader_id] = 1
-      row_to_append = pd.DataFrame([{
-        "RESERVATION_NO": fake_reserves_resno,
-        "DOCID": fake_reserves_docid,
-        "BID": fake_reserves_bid,
-        "RID": fake_reader_id,
-        "COPYNO": fake_copyno
-      }])
-      self.reserves_data = pd.concat([self.reserves_data, row_to_append], ignore_index=True)
-      reserves_data_inserting_query = self.__frame_dynamic_insert_query(
-        table_name="RESERVES",
-        columns=["RESERVATION_NO", "DOCID", "BID", "RID", "COPYNO"],
-        dtype=["str", "str", "str", "str", "str"],
-        values=[fake_reserves_resno, fake_reserves_docid, fake_reserves_bid, fake_reader_id, fake_copyno]
-      )
-      self.__execute_insert_query(
-        query = reserves_data_inserting_query
-      )
+              continue
+          all_indices_of_reserves_bid = [i for i in range(len(self.copy_data)) if self.copy_data["BID"].values[i] == fake_reserves_bid]
+          limit = 10 if len(all_indices_of_reserves_bid) > 10 else len(all_indices_of_reserves_bid)
+          limit = random.randint(1, limit)
+          all_indices_of_reserves_bid = random.sample(all_indices_of_reserves_bid, limit)
+          for k in range(len(all_indices_of_reserves_bid)):
+            fake_sample = self.copy_data.iloc[all_indices_of_reserves_bid[k]]
+            fake_reserves_docid = fake_sample["DOCID"]
+            fake_reserves_copyno = fake_sample["COPYNO"]
+            row_to_append = pd.DataFrame([{
+              "RESERVATION_NO": fake_reserves_resno,
+              "DOCID": fake_reserves_docid,
+              "BID": fake_reserves_bid,
+              "RID": fake_reader_id,
+              "COPYNO": fake_reserves_copyno
+            }])
+            self.reserves_data = pd.concat([self.reserves_data, row_to_append], ignore_index=True)
+            reserves_data_inserting_query = self.__frame_dynamic_insert_query(
+              table_name="RESERVES",
+              columns=["RESERVATION_NO", "DOCID", "BID", "RID", "COPYNO"],
+              dtype=["str", "str", "str", "str", "str"],
+              values=[fake_reserves_resno, fake_reserves_docid, fake_reserves_bid, fake_reader_id, fake_reserves_copyno]
+            )
+            self.__execute_insert_query(
+              query = reserves_data_inserting_query
+            )
+      r += 1
+      progess_bar.update(1)
+    progess_bar.close()
+      # for j in range(random.randint(7, 10)):
+      #   if random.randint(0, 1) == 1 and i < len(list_of_res_no):
+      #     fake_reserves_resno = list_of_res_no[i]
+      #   while True:
+      #     fake_sample = self.copy_data.sample(n=1)
+      #     fake_reserves_docid = fake_sample["DOCID"].values[0]
+      #     fake_reserves_bid = fake_sample["BID"].values[0]
+      #     fake_copyno = fake_sample["COPYNO"].values[0]
+      #     if fake_reserves_docid in self.borrows_data["DOCID"].values and fake_copyno in self.borrows_data["COPYNO"].values and fake_reserves_bid in self.borrows_data["BID"].values:
+      #       continue
+      #     else:
+      #       break
+      #   row_to_append = pd.DataFrame([{
+      #     "RESERVATION_NO": fake_reserves_resno,
+      #     "DOCID": fake_reserves_docid,
+      #     "BID": fake_reserves_bid,
+      #     "RID": fake_reader_id,
+      #     "COPYNO": fake_copyno
+      #   }])
+      #   self.reserves_data = pd.concat([self.reserves_data, row_to_append], ignore_index=True)
+      #   reserves_data_inserting_query = self.__frame_dynamic_insert_query(
+      #     table_name="RESERVES",
+      #     columns=["RESERVATION_NO", "DOCID", "BID", "RID", "COPYNO"],
+      #     dtype=["str", "str", "str", "str", "str"],
+      #     values=[fake_reserves_resno, fake_reserves_docid, fake_reserves_bid, fake_reader_id, fake_copyno]
+      #   )
+      #   self.__execute_insert_query(
+      #     query = reserves_data_inserting_query
+      #   )
+      #   i += 1
+      #   pbar.update(1)
     actual_reserves_record_count = self.__get_actual_record_count("RESERVES")
     return {
       "status": "success",

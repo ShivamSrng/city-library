@@ -15,13 +15,13 @@ class ComputeFineCollectedByBranch:
   
   def execute(self,
               startdatetime: str,
-              enddatetime: str,
-              branchid: str) -> dict:
+              enddatetime: str) -> dict:
     """
     Used to compute the fine collected by each branch
     
     Args:
-      None
+      startdatetime (str): The startdatetime to compute the fine collected by each branch
+      enddatetime (str): The enddatetime to compute the fine collected by each branch
     
     Returns:
       dict: A dictionary containing the metadata of the fine collected by each branch
@@ -30,7 +30,7 @@ class ComputeFineCollectedByBranch:
     query = f"""
     SELECT BRAN.BID, BRAN.BNAME, SUM(GREATEST(DATEDIFF(BORW.RDTIME, BORW.BDTIME) - 20, 0) * 0.2) / COUNT(*) AS TOTAL_FINE_COLLECTED
     FROM BRANCH AS BRAN, BORROWS AS BOR, BORROWING AS BORW
-    WHERE BRAN.BID='{branchid}' AND BRAN.BID = BOR.BID AND BOR.BOR_NO = BORW.BOR_NO AND BORW.BDTIME >= '{startdatetime}' AND BORW.RDTIME <= '{enddatetime}'
+    WHERE BRAN.BID = BOR.BID AND BOR.BOR_NO = BORW.BOR_NO AND BORW.BDTIME >= '{startdatetime}' AND BORW.RDTIME <= '{enddatetime}'
     GROUP BY BRAN.BID
     ORDER BY SUM(GREATEST(DATEDIFF(BORW.RDTIME, BORW.BDTIME) - 20, 0)) / COUNT(*) DESC;
     """

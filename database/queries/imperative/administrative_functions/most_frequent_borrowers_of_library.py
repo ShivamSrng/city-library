@@ -42,15 +42,18 @@ class MostFrequentBorrowersOfLibrary:
       return result_of_library_check
     
     query = f"""
-    SELECT REA.RID, REA.RNAME, COUNT(DISTINCT BOR.DOCID) AS BOOKS_BORROWED
+    SELECT REA.RID, REA.RNAME, COUNT(DISTINCT BO.DOCID)
     FROM READER AS REA, BORROWS AS BOR
-    WHERE REA.RID = BOR.RID AND BOR.BID IN (
-      SELECT BID
+    WHERE BOR.RID = REA.RID AND BOR.DOCID IN (
+      SELECT DISTINCT DOCID
+        FROM BOOK
+    ) AND BOR.BID IN (
+      SELECT DISTINCT BID
         FROM BRANCH
-        WHERE BNAME='{library_name}'
+        WHERE LNAME='{library_name}'
     )
     GROUP BY REA.RID
-    ORDER BY COUNT(DISTINCT BOR.DOCID) DESC
+    ORDER BY COUNT(DISTINCT BO.DOCID) DESC
     LIMIT {limit};
     """
     description = "Get number N as input and print the top N most frequent borrowers (Rid and name) in the library and the number of books each has borrowed."

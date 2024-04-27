@@ -41,15 +41,15 @@ class MostBorrowedBooksInLibrary:
       return result_of_query_to_check_library_name
     
     query = f"""
-    SELECT BOR.DOCID, DOC.TITLE, BO.ISBN
-    FROM BORROWS AS BOR, BOOK AS BO, DOCUMENT AS DOC
-    WHERE BOR.BID IN (
-      SELECT BID
+    SELECT BID, COUNT(DISTINCT BO.DOCID)
+    FROM BORROWS AS BOR, BOOK AS BO
+    WHERE BOR.DOCID = BO.DOCID AND BOR.BID IN (
+      SELECT DISTINCT BID
         FROM BRANCH
-        WHERE BNAME='{library_name}'
-    ) AND BO.DOCID = BOR.DOCID AND DOC.DOCID = BOR.DOCID
-    GROUP BY BOR.DOCID
-    ORDER BY COUNT(DISTINCT BOR.RID) DESC
+        WHERE LNAME='{library_name}'
+    )
+    GROUP BY BID
+    ORDER BY COUNT(DISTINCT BO.DOCID) DESC
     LIMIT {limit};
     """
     description = "Get number N as input and print the N most borrowed books in the library."

@@ -41,11 +41,14 @@ class MostFrequentlyBorrowers:
       return result_of_branch_check
     
     query = f"""
-    SELECT REA.RID, REA.RNAME, COUNT(DISTINCT COP.COPYNO, COP.DOCID) AS NO_OF_BOOKS_BORROWED
-    FROM COPY AS COP, BORROWS AS BOR, READER AS REA
-    WHERE COP.BID='{branch_no}' AND COP.BID = BOR.BID AND COP.COPYNO = BOR.COPYNO AND COP.DOCID = BOR.DOCID AND BOR.RID = REA.RID
-    GROUP BY RID
-    ORDER BY COUNT(DISTINCT COP.COPYNO, COP.DOCID) DESC
+    SELECT REA.RID, REA.RNAME, COUNT(DISTINCT BOR.DOCID)
+    FROM READER AS REA, BORROWS AS BOR
+    WHERE BOR.RID = REA.RID AND BOR.DOCID IN (
+      SELECT DISTINCT DOCID
+        FROM BOOK
+    ) AND BOR.BID='{branch_no}'
+    GROUP BY REA.RID
+    ORDER BY COUNT(DISTINCT BO.DOCID) DESC
     LIMIT {limit};
     """
     description = "Get number N and branch number I as input and print the top N most frequent borrowers (Rid and name) in branch I and the number of books each has borrowed."

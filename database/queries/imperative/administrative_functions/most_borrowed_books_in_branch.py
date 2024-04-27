@@ -41,11 +41,11 @@ class MostBorrowedBooksInBranch:
       return result_of_query_to_check_branch_no
     
     query = f"""
-    SELECT BO.DOCID, DOC.TITLE, BO.ISBN, COUNT(*) AS NO_OF_TIMES_BORROWED
-    FROM BOOK AS BO, DOCUMENT AS DOC, COPY AS COP, BORROWS AS BOR
-    WHERE BO.DOCID = DOC.DOCID AND DOC.DOCID = COP.DOCID AND COP.BID = '{branch_no}' AND COP.DOCID = BOR.DOCID AND COP.COPYNO = BOR.COPYNO AND COP.BID = BOR.BID
-    GROUP BY BO.DOCID
-    ORDER BY COUNT(*) DESC
+    SELECT BID, COUNT(DISTINCT BO.DOCID)
+    FROM BORROWS AS BOR, BOOK AS BO
+    WHERE BOR.DOCID = BO.DOCID AND BOR.BID='{branch_no}'
+    GROUP BY BID
+    ORDER BY COUNT(DISTINCT BO.DOCID) DESC
     LIMIT {limit};
     """
     description = "Get number N and branch number I as input and print the N most borrowed books in branch I."

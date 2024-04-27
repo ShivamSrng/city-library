@@ -38,28 +38,28 @@ const RenderFormTitle = ({index}) => {
   }
 }
 
-const RenderFormComponent = ({index}) => {
+const RenderFormComponent = ({index, username}) => {
   switch(index) {
     case 0:
-      return <AddADocument />
+      return <AddADocument username={username}/>
     case 1:
-      return <SearchADocument />
+      return <SearchADocument username={username}/>
     case 2:
-      return <AddAReader />
+      return <AddAReader username={username} />
     case 3:
-      return <RetrieveBranchInformation />
+      return <RetrieveBranchInformation username={username}/>
     case 4:
-      return <MostFrequentBorrowerOfBranch />
+      return <MostFrequentBorrowerOfBranch username={username}/>
     case 5:
-      return <MostFrequentBorrowerOfLibrary />
+      return <MostFrequentBorrowerOfLibrary username={username}/>
     case 6:
-      return <MostBorrowedBooksInBranch />
+      return <MostBorrowedBooksInBranch username={username}/>
     case 7:
-      return <MostBorrowedBooksInLibrary />
+      return <MostBorrowedBooksInLibrary username={username}/>
     case 8:
-      return <MostPopularBooksInLibraryYear />
+      return <MostPopularBooksInLibraryYear username={username}/>
     case 9:
-      return <ComputeFine />
+      return <ComputeFine username={username}/>
   }
 }
 
@@ -68,14 +68,14 @@ const adminDashboard = () => {
   const[isSelected, setIsSelected] = useState(0)
   const queryParameters = new URLSearchParams(window.location.search)
   var username = queryParameters.get('username')
-  var username = username.charAt(0).toUpperCase() + username.slice(1)
+  var correctedusername = username.charAt(0).toUpperCase() + username.slice(1)
   return (
     <>
       <div className={styles.adminDashboardContainer}>
         <div className={styles.dataContainer}>
           <div className={styles.splitContainer}>
             <div className={styles.titleContainer}>
-              <h1>Hello, <span className={styles.titleUsername}>{username}</span> !</h1>
+              <h1>Hello, <span className={styles.titleUsername}>{correctedusername}</span> !</h1>
             </div>
             <div className={styles.adminMenu}>
               <div><h2>Administrative Functions Menu</h2></div>
@@ -150,7 +150,7 @@ const adminDashboard = () => {
               <h2>{RenderFormTitle({index: isSelected})}</h2>
             </div>
             <div className={styles.formContainer}>
-              {RenderFormComponent({index: isSelected})}
+              {RenderFormComponent({index: isSelected, username: username})}
             </div>
           </div>
         </div>

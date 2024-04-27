@@ -30,7 +30,7 @@ function jsonToTable(jsonData) {
 }
 
 
-const mostFrequentBorrowerOfLibrary = () => {
+const mostFrequentBorrowerOfLibrary = ({username}) => {
   return (
     <>
       <div className={styles.loginPageContainer}>
@@ -47,7 +47,7 @@ const mostFrequentBorrowerOfLibrary = () => {
                 const data = await response.json()
                 var resultOverlay = document.getElementById('overlayResult')
                 resultOverlay.style.display = 'flex'
-                let content = "<div style='display: flex; flex-direction: column; margin-top: 10px; padding: 0rem 5rem;'>";
+                let content = "<div style='height: 100%; display: flex; flex-direction: column; margin-top: 10px; padding: 0rem 5rem;'>";
                 content += "<h1 style='font-size: 2rem'>Most Frequency Borrowers of Library: '" + libraryname +"'</h1>"
                 if (data.status == "success" && data.hasOwnProperty('descriptive_error') == false){
                   content += jsonToTable(data.query_result);
@@ -59,7 +59,7 @@ const mostFrequentBorrowerOfLibrary = () => {
                 {
                   content += "<p>Failed to fetch the most frequent borrowers' data for the provided library.</p>";
                 }
-                content += "<button style='width: 20%; margin-top: 1rem; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/AdminDashboard'\">Close</button>";
+                content += "<button style='pointer: cursor; margin-top: 1rem; width: 20%; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/AdminDashboard?username=" + username + "'\">Close</button>";
                 content += "</div>";
                 resultOverlay.innerHTML = content;
               }

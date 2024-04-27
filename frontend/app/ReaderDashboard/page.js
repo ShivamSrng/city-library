@@ -4,10 +4,9 @@ import styles from './page.module.css'
 import SearchADocumentByID from '../ReaderFunctions/SearchDocumentByID/page';
 import SearchADocumentByTitle from '../ReaderFunctions/SearchDocumentByTitle/page';
 import SearchADocumentByPublisherName from '../ReaderFunctions/SearchDocumentByPublisherName/page';
-import RetrieveBranchInformation from '../AdminFunctions/RetrieveBranchInformation/page'
-import MostFrequentBorrowerOfBranch from '../AdminFunctions/MostFrequentBorrowersOfBranch/page'
-import MostFrequentBorrowerOfLibrary from '../AdminFunctions/MostFrequentBorrowerOfLibrary/page'
-import MostBorrowedBooksInBranch from '../AdminFunctions/MostBorrowedBooksInBranch/page'
+import DocumentCheckout from '../ReaderFunctions/DocumentCheckout/page'
+import DocumentReserve from '../ReaderFunctions/DocumentReserve/page'
+import DocumentReturn from '../ReaderFunctions/DocumentReturn/page'
 import ComputeFine from '../ReaderFunctions/ComputeFine/page'
 import GetReservedDocuments from '../ReaderFunctions/GetReservedDocuments/page'
 import SearchADocumentByPublisherNameConstrained from '../ReaderFunctions/SearchDocumentByPublisherNameConstrained/page'
@@ -44,12 +43,12 @@ const RenderFormComponent = ({index, readerid, readername}) => {
       return <SearchADocumentByTitle readerid={readerid} readername={readername} />
     case 2:
       return <SearchADocumentByPublisherName readerid={readerid} readername={readername} />
-    // case 3:
-    //   return <RetrieveBranchInformation readerid={readerid} readername={readername} />
-    // case 4:
-    //   return <MostFrequentBorrowerOfBranch readerid={readerid} readername={readername} />
-    // case 5:
-    //   return <MostFrequentBorrowerOfLibrary readerid={readerid} readername={readername} />
+    case 3:
+      return <DocumentCheckout readerid={readerid} readername={readername} />
+    case 4:
+      return <DocumentReturn readerid={readerid} readername={readername} />
+    case 5:
+      return <DocumentReserve readerid={readerid} readername={readername} />
     case 6:
       return <ComputeFine readerid={readerid} readername={readername} />
     case 7:

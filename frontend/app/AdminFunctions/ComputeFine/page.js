@@ -30,7 +30,7 @@ function jsonToTable(jsonData) {
 }
 
 
-const computeFine = () => {
+const computeFine = ({username}) => {
   return (
     <>
       <div className={styles.loginPageContainer}>
@@ -42,14 +42,13 @@ const computeFine = () => {
                 event.preventDefault()
                 const stime = event.target.stime.value
                 const etime = event.target.etime.value
-                const branchname = event.target.branchname.value
-                const dynamicapi = 'http://localhost:8000/cityLibrary/admin/computeFineCollectedByBranch/' +  stime + '/' + etime + '/' + branchname
+                const dynamicapi = 'http://localhost:8000/cityLibrary/admin/computeFineCollectedByBranch/' +  stime + '/' + etime
                 const response = await fetch(dynamicapi)
                 const data = await response.json()
                 var resultOverlay = document.getElementById('overlayResult')
                 resultOverlay.style.display = 'flex'
-                let content = "<div style='display: flex; flex-direction: column; margin-top: 10px; padding: 0rem 5rem;'>";
-                content += "<h1 style='font-size: 2rem'>Compute Fine Collected By Branch: '" + branchname +"'</h1>"
+                let content = "<div style='height: 100%; display: flex; flex-direction: column; margin-top: 10px; padding: 0rem 5rem;'>";
+                content += "<h1 style='font-size: 2rem'>Fine Collected by all Branches</h1>"
                 if (data.status == "success" && data.hasOwnProperty('descriptive_error') == false){
                   content += jsonToTable(data.query_result);
                 }
@@ -60,7 +59,7 @@ const computeFine = () => {
                 {
                   content += "<p>Failed to fetch the collected fine for the provided branch.</p>";
                 }
-                content += "<button style='width: 20%; margin-top: 1rem; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/AdminDashboard'\">Close</button>";
+                content += "<button style='pointer: cursor; margin-top: 1rem; width: 20%; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/AdminDashboard?username=" + username + "'\">Close</button>";
                 content += "</div>";
                 resultOverlay.innerHTML = content;
               }
@@ -73,11 +72,6 @@ const computeFine = () => {
           <div className={styles.placeHolder}>
             <label className={styles.label} htmlFor="username">End Date and Time (YYYY-MM-DD HH:MM:SS): </label>
             <input className={styles.input} type="text" id="etime" name="username" required/>
-          </div>
-
-          <div className={styles.placeHolder}>
-            <label className={styles.label} htmlFor="username">Branch ID: </label>
-            <input className={styles.input} type="text" id="branchname" name="username" required/>
           </div>
 
           <div className={styles.buttonPlaceHolder}>

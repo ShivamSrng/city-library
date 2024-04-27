@@ -24,7 +24,7 @@ function jsonToTable(jsonData) {
   return tableHtml;
 }
 
-const searchADocument = ({username}) => {
+const documentReturn = ({readerid, readername}) => {
   return (
     <>
       <div className={styles.loginPageContainer}>
@@ -34,50 +34,55 @@ const searchADocument = ({username}) => {
         <form className={styles.formContainer} onSubmit={
               async (event) => {
                 event.preventDefault()
+                const borno = event.target.borno.value
                 const documentid = event.target.documentid.value
-                const copyid = event.target.copyid.value
+                const copyno = event.target.copyno.value
                 const branchid = event.target.branchid.value
-                const dynamicapi = 'http://localhost:8000/cityLibrary/admin/searchDocumentCopy/' + documentid + '/' + copyid + '/' + branchid
+                const dynamicapi = 'http://localhost:8000/cityLibrary/reader/returnDocument/' + borno + '/' + documentid + '/' + copyno + '/' + branchid + '/' + readerid
                 const response = await fetch(dynamicapi)
                 const data = await response.json()
                 var resultOverlay = document.getElementById('overlayResult')
                 resultOverlay.style.display = 'flex'
-                let content = "<div style='height: 100%; display: flex; flex-direction: column; margin-top: 10px; padding: 0rem 5rem;'>";
-                content += "<h1 style='font-size: 2rem'>Searching A Document</h1>"
+                let content = "<div style='display: flex; flex-direction: column; margin-top: 10px; padding: 0rem 5rem;'>";
+                content += "<h1 style='font-size: 2rem'>Reserving the Document</h1>"
                 if (data.status == "success" && data.hasOwnProperty('descriptive_error') == false){
-                  content += "<p>A Document Copy found with mentioned details: </p>";
-                  content += jsonToTable(data.query_result); // Assuming jsonToTable function returns a table HTML string
-                  content += "<p>Using the position of the copy, you can locate the document's copy in the library. For example, if the position is '001A03', it means that the copy of that document is in the third shelve of bookcase A03</p>"
+                  content += "<p>Document Returning Successful</p>";
+                  content += jsonToTable(data.query_result); 
                 }
-                else if (data.descriptive_error) {
+                else if (data.hasOwnProperty('descriptive_error') == true) {
                   content += "<p>" + data.descriptive_error + "</p>";
                 }
                 else 
                 {
-                  content += "<p>Copy failed to be added. Please check the data that you have entered.</p>";
+                  content += "<p>No Document with '" + documentid + "' exists. Please check the Document ID again.</p>";
                 }
-                content += "<button style='pointer: cursor; margin-top: 1rem; width: 20%; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/AdminDashboard?username=" + username + "'\">Close</button>";
+                content += "<button style='cursor: pointer; width: 20%; margin: 1rem 0rem; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/ReaderDashboard"  + '?readerid=' + readerid + '&readername=' + readername + "'\">Close</button>";
                 content += "</div>";
                 resultOverlay.innerHTML = content;
               }
           }>
+          <div className={styles.placeHolder}>
+            <label className={styles.label} htmlFor="username">Borrow Nuumber: </label>
+            <input className={styles.input} type="text" id="borno" name="username" required/>
+          </div>
+
           <div className={styles.placeHolder}>
             <label className={styles.label} htmlFor="username">Document ID: </label>
             <input className={styles.input} type="text" id="documentid" name="username" required/>
           </div>
 
           <div className={styles.placeHolder}>
-            <label className={styles.label} htmlFor="username">Copy ID: </label>
-            <input className={styles.input} type="text" id="copyid" name="username" required/>
+            <label className={styles.label} htmlFor="username">Copy Number: </label>
+            <input className={styles.input} type="text" id="copyno" name="username" required/>
           </div>
-          
+
           <div className={styles.placeHolder}>
             <label className={styles.label} htmlFor="username">Branch ID: </label>
             <input className={styles.input} type="text" id="branchid" name="username" required/>
           </div>
 
           <div className={styles.buttonPlaceHolder}>
-            <button className={styles.submitButton} type="submit">Search Copy</button>
+            <button className={styles.submitButton} type="submit">Checkout Document</button>
           </div>
         </form>
       </div>
@@ -88,4 +93,4 @@ const searchADocument = ({username}) => {
   )
 }
 
-export default searchADocument
+export default documentReturn

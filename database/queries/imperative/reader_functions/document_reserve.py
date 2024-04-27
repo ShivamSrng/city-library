@@ -124,5 +124,18 @@ class DocumentReserve:
       result_query_to_insert_in_reserves["descriptive_error"] = "Error in reserving the document"
       return result_query_to_insert_in_reserves
     
+    query_to_check_insertion_in_reserves = f"""
+    SELECT *
+    FROM RESERVES
+    WHERE RID = '{rid}' AND RESERVATION_NO = '{fake_resno}' AND DOCID = '{doc_id}' AND COPYNO = '{copy_no}' AND BID = '{bid}';
+    """
+    result_query_to_check_insertion_in_reserves = self.db_utilities.format_query_result(
+      query=query_to_check_insertion_in_reserves,
+      description="Check if the insertion in RESERVES was successful"
+    )
+    if result_query_to_check_insertion_in_reserves['status'] == "error":
+      result_query_to_check_insertion_in_reserves["descriptive_error"] = "Error in reserving the document"
+      return result_query_to_check_insertion_in_reserves
+    
     self.db_utilities.connection.commit()
-    return result_query_to_insert_in_reserves
+    return result_query_to_check_insertion_in_reserves

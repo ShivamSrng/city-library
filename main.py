@@ -368,14 +368,13 @@ def retrieveBranchInformation(
 
 
 @app.get(
-	path="/cityLibrary/admin/computeFineCollectedByBranch/{startdatetime}/{enddatetime}/{branch_id}",
+	path="/cityLibrary/admin/computeFineCollectedByBranch/{startdatetime}/{enddatetime}",
 	tags=["imperative admin"],
 	description="Get a start date S and an end date E as input and print, for each branch, the branch Id and name and the average fine paid by the borrowers for documents borrowed from this branch during the corresponding period of time."
 )
 def computeFineCollectedByBranch(
 	startdatetime: str,
 	enddatetime: str,
-	branch_id: str,
 ):
 	"""
 	Get a start date S and an end date E as input and print, for each branch, the branch Id and name and the average fine paid by the borrowers for documents borrowed from this branch during the corresponding period of time.
@@ -388,7 +387,7 @@ def computeFineCollectedByBranch(
 	Returns:
 		dict: A dictionary containing the fine collected details
 	"""
-	return dbengine.computeFineCollectedByBranch(startdatetime=startdatetime, enddatetime=enddatetime, branchid=branch_id)
+	return dbengine.computeFineCollectedByBranch(startdatetime=startdatetime, enddatetime=enddatetime)
 
 
 @app.get(

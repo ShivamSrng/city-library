@@ -96,6 +96,19 @@ class DocumentCheckout:
         result_query_to_get_reader_previous_borrows["descriptive_error"] = "Reader has already borrowed 10 documents, hence it is not possible to checkout more documents"
         return result_query_to_get_reader_previous_borrows
     
+    query_to_check_already_borrowed = f"""
+    SELECT COUNT(*)
+    FROM BORROWS AS BOR
+    WHERE BOR.DOCID = '{document_id}' AND BOR.COPYNO = '{copy_no}' AND BOR.BID = '{branch_id}' AND BOR.RID = '{reader_id}';
+    """
+    result_query_to_check_already_borrowed = self.dbutilites.format_query_result(
+      query=query_to_check_already_borrowed,
+      description="Check if the document is already borrowed"
+    )
+    if result_query_to_check_already_borrowed['query_result'][0]['COUNT(*)'] > 0:
+      result_query_to_check_already_borrowed["descriptive_error"] = "The document is already borrowed by you."
+      return result_query_to_check_already_borrowed
+    
     fake_borno = "BOR" + Faker().password(length=6, special_chars=False, digits=True, upper_case=True, lower_case=False)
     bd_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     rd_datetime = (datetime.datetime.now() + datetime.timedelta(days=20)).strftime("%Y-%m-%d %H:%M:%S")
@@ -132,5 +145,18 @@ class DocumentCheckout:
     if result_query_insert_new_record_in_borrows['status'] == "error":
       result_query_insert_new_record_in_borrows["descriptive_error"] = "There was an error while checking out your requested copy of the document (in BORROWS Relation)."
     
+    query_to_check_insertion_in_borrows = f"""
+    SELECT *
+    FROM BORROWS AS BOR
+    WHERE BOR.BOR_NO = '{fake_borno}' AND BOR.DOCID = '{document_id}' AND BOR.COPYNO = '{copy_no}' AND BOR.BID = '{branch_id}' AND BOR.RID = '{reader_id}';
+    """
+    result_query_to_check_insertion_in_borrows = self.dbutilites.format_query_result(
+      query=query_to_check_insertion_in_borrows,
+      description="Check if the insertion in BORROWS was successful"
+    )
+    if not result_query_to_check_insertion_in_borrows['query_result']:
+      result_query_to_check_insertion_in_borrows["descriptive_error"] = "There was an error while checking out your requested copy of the document (in BORROWS Relation)."
+      return result_query_to_check_insertion_in_borrows
+    
     self.dbutilites.connection.commit()
-    return result_query_insert_new_record_in_borrows
+    return result_query_to_check_insertion_in_borrows

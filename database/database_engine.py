@@ -394,20 +394,19 @@ class DatabaseEngine:
     return MostBorrowedBooksInBranch(self.connection).execute(limit, branch_no)
   
 
-  def computeFineCollectedByBranch(self, startdatetime: str, enddatetime: str, branchid: str) -> dict:
+  def computeFineCollectedByBranch(self, startdatetime: str, enddatetime: str) -> dict:
     """
     Get a start date S and an end date E as input and print, for each branch, the branch Id and name and the average fine paid by the borrowers for documents borrowed from this branch during the corresponding period of time.
 
     Args:
       startdatetime (str): The start date to compute the fine collected for
       enddatetime (str): The end date to compute the fine collected for
-      branchid (str): The branch_no to compute the fine collected for
     
     Returns:
       dict: A dictionary containing the fine collected details
     """
 
-    return ComputeFineCollectedByBranch(self.connection).execute(startdatetime, enddatetime, branchid)
+    return ComputeFineCollectedByBranch(self.connection).execute(startdatetime, enddatetime)
   
 
   def mostBorrowedBooksInLibrary(self, limit: int, library_name: str) -> dict:

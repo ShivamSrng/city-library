@@ -224,7 +224,7 @@ class DatabaseEngine:
       dict: A dictionary containing the checkout details
     """
     
-    return DocumentCheckout(self.connection).checkout_document(document_id, reader_id, copy_no, branch_id)
+    return DocumentCheckout(self.connection).execute(document_id, reader_id, copy_no, branch_id)
   
 
   def getReservedDocument(self, reader_id: str) -> dict:
@@ -258,7 +258,7 @@ class DatabaseEngine:
     return DocumentReserve(self.connection).execute(reader_id, document_id, copy_no, branch_id)
 
 
-  def returnDocument(self, bor_no: str, docid: str, copyno: str, bid: str) -> dict:
+  def returnDocument(self, bor_no: str, docid: str, copyno: str, bid: str, reader_id: str) -> dict:
     """
     Used to return a document to the library
     
@@ -267,12 +267,13 @@ class DatabaseEngine:
       docid (str): The docid to return
       copyno (str): The copyno to return
       bid (str): The bid to return
+      reader_id (str): The reader_id to return
     
     Returns:
       dict: A dictionary containing the return details
     """
 
-    return DocumentReturn(self.connection).execute(bor_no, docid, copyno, bid)
+    return DocumentReturn(self.connection).execute(bor_no, docid, copyno, bid, reader_id)
   
 
   def validateAdminData(self, username: str, password: str) -> bool:

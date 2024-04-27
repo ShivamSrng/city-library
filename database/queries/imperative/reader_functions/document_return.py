@@ -14,10 +14,11 @@ class DocumentReturn:
 
 
   def execute(self,
-                   bor_no: str,
-                   docid: str,
-                   copyno: str,
-                   bid: str) -> dict:
+              bor_no: str,
+              docid: str,
+              copyno: str,
+              bid: str,
+              reader_id: str) -> dict:
     """
     Get document information from the database.
 
@@ -26,56 +27,69 @@ class DocumentReturn:
       docid (str): The document ID.
       copyno (str): The copy number.
       bid (str): The branch ID.
+      reader_id (str): The reader ID.
     
     Returns:
       dict: The document information.
     """
 
-    query_to_check_if_any_such_document_is_borrowed = f"""
-      SELECT * FROM BORROWS
-      WHERE bor_no = '{bor_no}'
-      AND docid = '{docid}'
-      AND copyno = '{copyno}'
-      AND bid = '{bid}';
+    query_to_check_if_document_copoy_is_actually_borrowed = f"""
+    SELECT COUNT(*)
+    FROM BORROWS AS B
+    WHERE B.BOR_NO = '{bor_no}' AND B.DOCID = '{docid}' AND B.COPYNO = '{copyno}' AND B.BID = '{bid}' AND B.RID = '{reader_id}';
     """
-    query_to_check_if_any_such_document_is_borrowed_result = self.db_utilities.format_query_result(
-      query=query_to_check_if_any_such_document_is_borrowed,
-      description="To check if any such document is borrowed."
+    result_query_to_check_if_document_copy_is_actually_borrowed = self.db_utilities.format_query_result(
+      query=query_to_check_if_document_copoy_is_actually_borrowed,
+      description="Check if document copy is actually borrowed"
     )
-    if len(query_to_check_if_any_such_document_is_borrowed_result["query_result"]) == 0:
-      return {
-        "error": "No such document is borrowed or no such document exists."
-      }
+    if result_query_to_check_if_document_copy_is_actually_borrowed['query_result'][0]['COUNT(*)'] == 0:
+      result_query_to_check_if_document_copy_is_actually_borrowed["descriptive_error"] = "Document copy is not borrowed"
+      return result_query_to_check_if_document_copy_is_actually_borrowed
     
-    query_to_fetch_document_borrow_date = f"""
-    SELECT BDATE FROM BORROWING
-    WHERE bor_no = '{bor_no}  '  
+    query_to_get_bdtime = f"""
+    SELECT BDTIME
+    FROM BORROWING
+    WHERE BOR_NO = '{bor_no}';
     """
-    query_to_fetch_document_borrow_date_result = self.db_utilities.format_query_result(
-      query=query_to_fetch_document_borrow_date,
-      description="To fetch the document borrow date."
+    result_query_to_get_bdtime = self.db_utilities.format_query_result(
+      query=query_to_get_bdtime,
+      description="Get borrowing date"
     )
-    result = query_to_fetch_document_borrow_date_result["query_result"]
-    borrow_date = datetime.datetime.strptime(result[0][0], '%Y-%m-%d').strftime('%Y-%m-%d')
-    days_borrowed = (datetime.datetime.now() - datetime.datetime.strptime(borrow_date, '%Y-%m-%d')).days
-    fine = 0.20 * days_borrowed
+    print(result_query_to_get_bdtime)
+    if result_query_to_get_bdtime['query_result'][0]['BDTIME'] is None:
+      result_query_to_get_bdtime["descriptive_error"] = "Document is not borrowed. There is some issue with the consistency of the database. Please contact the library staff."
+      return result_query_to_get_bdtime
+    else:
+      bdtime = result_query_to_get_bdtime['query_result'][0]['BDTIME']
+      rdtime = datetime.datetime.now()
+      fine = (rdtime - bdtime).total_seconds() / 86400 * 0.2
 
-    query_to_update_return_date = f"""
+    query_to_return_document = f"""
     UPDATE BORROWING
-    SET RDATE = '{datetime.datetime.now().strftime('%Y-%m-%d')}'
-    WHERE bor_no = '{bor_no}'
+    SET RDTIME = '{rdtime.strftime('%Y-%m-%d %H:%M:%S')}'
+    WHERE BOR_NO = '{bor_no}';
     """
-    query_to_update_return_date_result = self.db_utilities.format_query_result(
-      query=query_to_update_return_date,
-      description="To update the return date."
+    result_query_to_return_document = self.db_utilities.format_query_result(
+      query=query_to_return_document,
+      description="Return document"
     )
-    return {
-      "message": "Document returned successfully.",
-      "query_result": query_to_update_return_date_result["query_result"],
-      "fine": fine,
-      "queries": {
-        "query_to_check_if_any_such_document_is_borrowed": query_to_check_if_any_such_document_is_borrowed_result,
-        "query_to_fetch_document_borrow_date": query_to_fetch_document_borrow_date_result,
-        "query_to_update_return_date": query_to_update_return_date_result,
-      }
-    }
+    if result_query_to_return_document['status'] == "error":
+      result_query_to_return_document["descriptive_error"] = "There was an error while returning the document"
+      return result_query_to_return_document
+    
+    query_to_set_reader_id_to_null = f"""
+    UPDATE BORROWS
+    SET RID = NULL
+    WHERE BOR_NO = '{bor_no}' AND DOCID = '{docid}' AND COPYNO = '{copyno}' AND BID = '{bid}';
+    """
+    result_query_to_set_reader_id_to_null = self.db_utilities.format_query_result(
+      query=query_to_set_reader_id_to_null,
+      description="Set reader ID to NULL"
+    )
+    if result_query_to_set_reader_id_to_null['status'] == "error":
+      result_query_to_set_reader_id_to_null["descriptive_error"] = "There was an error while setting the reader ID to NULL"
+      return result_query_to_set_reader_id_to_null
+    
+    result_query_to_return_document['fine'] = fine
+    self.db_utilities.connection.commit()
+    return result_query_to_return_document

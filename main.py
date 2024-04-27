@@ -207,7 +207,7 @@ def reserveDocument(
 
 
 @app.get(
-	path="/cityLibrary/reader/returnDocument/{bor_no}/{docid}/{copyno}/{bid}",
+	path="/cityLibrary/reader/returnDocument/{bor_no}/{docid}/{copyno}/{bid}/{reader_id}",
 	tags=["imperative reader"],
 	description="Return a document using the given parameters"
 )
@@ -216,6 +216,7 @@ def returnDocument(
 	docid: str,
 	copyno: str,
 	bid: str,
+	reader_id: str,
 ):
 	"""
 	Return a document using the given parameters
@@ -229,7 +230,7 @@ def returnDocument(
 	Returns:
 		dict: A dictionary containing the return details
 	"""
-	return dbengine.returnDocument(bor_no, docid, copyno, bid)
+	return dbengine.returnDocument(bor_no, docid, copyno, bid, reader_id)
 
 
 @app.get(

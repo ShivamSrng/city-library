@@ -33,86 +33,96 @@ class DocumentReserve:
     """
 
     query_to_check_if_reader_exists = f"""
-    SELECT * FROM READER
-    WHERE rid = '{rid}';
+    SELECT COUNT(*)
+    FROM READER
+    WHERE RID = '{rid}';
     """
-    query_to_check_if_reader_exists_result = self.db_utilities.format_query_result(
+    result_query_to_check_if_reader_exists = self.db_utilities.format_query_result(
       query=query_to_check_if_reader_exists,
-      description="To check if the reader exists."
+      description="Check if reader exists"
     )
-    if len(query_to_check_if_reader_exists_result["query_result"]) == 0:
-      return {
-        "status": "error",
-        "error": "No such reader exists.",
-        "query": query_to_check_if_reader_exists
-      }
+    if result_query_to_check_if_reader_exists['query_result'][0]['COUNT(*)'] == 0:
+      result_query_to_check_if_reader_exists["descriptive_error"] = "Reader does not exist"
+      return result_query_to_check_if_reader_exists
+    
+    query_to_check_if_branch_exists = f"""
+    SELECT COUNT(*)
+    FROM BRANCH
+    WHERE BID = '{bid}';
+    """
+    result_query_to_check_if_branch_exists = self.db_utilities.format_query_result(
+      query=query_to_check_if_branch_exists,
+      description="Check if branch exists"
+    )
+    if result_query_to_check_if_branch_exists['query_result'][0]['COUNT(*)'] == 0:
+      result_query_to_check_if_branch_exists["descriptive_error"] = "Branch does not exist"
+      return result_query_to_check_if_branch_exists
     
     query_to_check_if_document_exists = f"""
-    SELECT * FROM DOCUMENT
-    WHERE docid = '{doc_id}'
-    AND copyno = '{copy_no}'
-    AND bid = '{bid}';
+    SELECT COUNT(*)
+    FROM DOCUMENT
+    WHERE DOCID = '{doc_id}';
     """
-    query_to_check_if_document_exists_result = self.db_utilities.format_query_result(
+    result_query_to_check_if_document_exists = self.db_utilities.format_query_result(
       query=query_to_check_if_document_exists,
-      description="To check if the document exists."
+      description="Check if document exists"
     )
-    if len(query_to_check_if_document_exists_result["query_result"]) == 0:
-      return {
-        "status": "error",
-        "error": "No such document exists.",
-        "query": query_to_check_if_document_exists
-      }
-    query_to_check_if_reader_has_reserved_more_than_10_documents = f"""
-    SELECT COUNT(*) FROM RESERVES
-    WHERE rid = '{rid}'
-    GROUP BY {rid};
+    if result_query_to_check_if_document_exists['query_result'][0]['COUNT(*)'] == 0:
+      result_query_to_check_if_document_exists["descriptive_error"] = "Document does not exist"
+      return result_query_to_check_if_document_exists
+    
+    query_to_check_if_document_copy_is_available = f"""
+    SELECT COUNT(*)
+    FROM COPY
+    WHERE DOCID = '{doc_id}' AND COPYNO = '{copy_no}' AND BID = '{bid}';
     """
-    query_to_check_if_reader_has_reserved_more_than_10_documents_result = self.db_utilities.format_query_result(
-      query=query_to_check_if_reader_has_reserved_more_than_10_documents,
-      description="To check if the reader has reserved more than 10 documents."
+    result_query_to_check_if_document_copy_is_available = self.db_utilities.format_query_result(
+      query=query_to_check_if_document_copy_is_available,
+      description="Check if document copy is available"
     )
-    if len(query_to_check_if_reader_has_reserved_more_than_10_documents_result["query_result"]) >= 10:
-      return {
-        "status": "error",
-        "error": "The reader has already reserved 10 documents.",
-        "query": query_to_check_if_reader_has_reserved_more_than_10_documents
-      }
-    while True:
-      fake_resno = "RES" + Faker().profile.password(length=6, special_chars=False, digits=True, upper_case=True, lower_case=False)
-      query_to_check_whether_generated_resno_already_exists = f"""
-      SELECT * FROM RESERVES
-      WHERE resno = '{fake_resno}';
-      """
-      query_to_check_whether_generated_resno_already_exists_result = self.db_utilities.format_query_result(
-        query=query_to_check_whether_generated_resno_already_exists,
-        description="To check whether the generated reservation number already exists."
-      )
-      if len(query_to_check_whether_generated_resno_already_exists_result["query_result"]) == 0:
-        break
-    query_to_reserve_document = f"""
-    INSERT INTO RESERVES (RID, RESERVATION_NO, DOCID, COPYNO, BID) VALUES ({rid}, {fake_resno}, {doc_id}, {copy_no}, {bid});
+    if result_query_to_check_if_document_copy_is_available['query_result'][0]['COUNT(*)'] == 0:
+      result_query_to_check_if_document_copy_is_available["descriptive_error"] = "Document copy is not available"
+      return result_query_to_check_if_document_copy_is_available
+    
+    query_to_check_if_document_copy_is_reserved = f"""
+    SELECT COUNT(*)
+    FROM RESERVES
+    WHERE DOCID = '{doc_id}' AND COPYNO = '{copy_no}' AND BID = '{bid}';
     """
-    query_to_reserve_document_result = self.db_utilities.format_query_result(
-      query=query_to_reserve_document,
-      description="To reserve the document."
+    result_query_to_check_if_document_copy_is_reserved = self.db_utilities.format_query_result(
+      query=query_to_check_if_document_copy_is_reserved,
+      description="Check if document copy is reserved"
     )
-    query_to_insert_reservation_no_in_reservation = f"""
-    INSERT INTO RESERVATION (RESERVATION_NO, DTIME) VALUES ('{fake_resno}', '{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}');
+    if result_query_to_check_if_document_copy_is_reserved['query_result'][0]['COUNT(*)'] > 0:
+      result_query_to_check_if_document_copy_is_reserved["descriptive_error"] = "Document copy is already reserved"
+      return result_query_to_check_if_document_copy_is_reserved
+    
+    fake_resno = "RES" + Faker().password(length=6, special_chars=False, digits=True, upper_case=True, lower_case=False) 
+    dtime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    query_to_insert_in_reservation = f"""
+    INSERT INTO RESERVATION
+    VALUES ('{fake_resno}', '{dtime}');
     """
-    query_to_insert_reservation_no_in_reservation_result = self.db_utilities.format_query_result(
-      query=query_to_insert_reservation_no_in_reservation,
-      description="To insert the reservation number in the reservation table."
+    result_query_to_insert_in_reservation = self.db_utilities.format_query_result(
+      query=query_to_insert_in_reservation,
+      description="Reserve a document"
     )
-    return {
-      "status": "success",
-      "message": "Document reserved successfully.",
-      "reservation_no": fake_resno,
-      "queries": {
-        "query_to_check_if_reader_exists": query_to_check_if_reader_exists_result,
-        "query_to_check_if_document_exists": query_to_check_if_document_exists_result,
-        "query_to_check_if_reader_has_reserved_more_than_10_documents": query_to_check_if_reader_has_reserved_more_than_10_documents_result,
-        "query_to_reserve_document": query_to_reserve_document_result,
-        "query_to_insert_reservation_no_in_reservation": query_to_insert_reservation_no_in_reservation_result
-      }
-    }
+    print(result_query_to_insert_in_reservation)
+    if result_query_to_insert_in_reservation['status'] == "error":
+      result_query_to_insert_in_reservation["descriptive_error"] = "Error in reserving the document"
+      return result_query_to_insert_in_reservation
+    
+    query_to_insert_in_reserves = f"""
+    INSERT INTO RESERVES
+    VALUES ('{rid}', '{fake_resno}', '{doc_id}', '{copy_no}', '{bid}');
+    """
+    result_query_to_insert_in_reserves = self.db_utilities.format_query_result(
+      query=query_to_insert_in_reserves,
+      description="Reserve a document"
+    )
+    if result_query_to_insert_in_reserves['status'] == "error":
+      result_query_to_insert_in_reserves["descriptive_error"] = "Error in reserving the document"
+      return result_query_to_insert_in_reserves
+    
+    self.db_utilities.connection.commit()
+    return result_query_to_insert_in_reserves

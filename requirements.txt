@@ -3,3 +3,4 @@ uvicorn~=0.29.0
 configparser~=7.0.0
 mysqlclient~=2.2.4
 Faker~=24.11.0
+pandas~=2.2.2

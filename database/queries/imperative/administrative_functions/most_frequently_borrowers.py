@@ -48,7 +48,7 @@ class MostFrequentlyBorrowers:
         FROM BOOK
     ) AND BOR.BID='{branch_no}'
     GROUP BY REA.RID
-    ORDER BY COUNT(DISTINCT BO.DOCID) DESC
+    ORDER BY COUNT(DISTINCT BOR.DOCID) DESC
     LIMIT {limit};
     """
     description = "Get number N and branch number I as input and print the top N most frequent borrowers (Rid and name) in branch I and the number of books each has borrowed."

@@ -44,8 +44,7 @@ const addADocument = ({username}) => {
                   let content = "<div style='height: 100%; display: flex; flex-direction: column; margin-top: 10px; padding: 0rem 5rem;'>";
                   content += "<p>Copy Added Successfully, with details as: </p>";
                   content += jsonToTable(data.new_copy_details); // Assuming jsonToTable function returns a table HTML string
-                  content += "<button style='width: 20%; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/AdminDashboard'\">Close</button>";
-                  content += "</div>";
+                  content += "<button style='pointer: cursor; margin-top: 1rem; width: 20%; border-radius: 5rem; background-color: rgb(243, 181, 106); color: black; boder: 2px solid black; font-size: 1.2rem;' onClick=\"window.location.href='/AdminDashboard?username=" + username + "'\">Close</button>";
                   resultOverlay.innerHTML = content;
                 } else {
                   let content = "<div style='display: flex; flex-direction: column;'>";
